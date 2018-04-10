@@ -1,0 +1,12 @@
+<mt-popup
+        v-model="countryShow"
+        position="bottom">
+    <div class="countryClose" @click="countryShow=false">
+        <img src="/static/image/public/country_close.png">
+    </div>
+    <mt-index-list>
+        <mt-index-section v-for="item in countryList" :index="item.initial">
+            <mt-cell v-for="el in item.list"  @click.native="countryClick(el)" :title="el.country" ><span>+{{el.country_code}}</span></mt-cell>
+        </mt-index-section>
+    </mt-index-list>
+</mt-popup>

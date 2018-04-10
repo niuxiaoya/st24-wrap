@@ -1,0 +1,243 @@
+{include file="public/wrap_header"}
+    {load file='/static/css/public_head.css'}
+    {load file='/static/css/public_foot.css'}
+    {load file='/static/css/home.css'}
+    {load file='/static/js/public_f.js'}
+</head>
+<body>
+<div id="app" :class="{isHide:isShow}">
+    {include file="public/header"}
+    {include file="public/aside_left"}
+    <div class="banner">
+        <mt-swipe :auto="4000">
+            <mt-swipe-item>
+                <img src="/static/image/test.jpg">
+            </mt-swipe-item>
+            <mt-swipe-item>
+                <img src="/static/image/test.jpg">
+            </mt-swipe-item>
+        </mt-swipe>
+    </div>
+    <main class="home_main">
+        <div class="topBrand">
+            <h5>
+                {{brand_list.title}}
+            </h5>
+            <ul>
+                <li v-for="item in brand_list.list">
+                    <img :src="item.cover_pic" :alt="item.title">
+                    <div>
+                        {{item.title}}
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="wrapWatch">
+            <div class="watchHead" v-for="el in watch_list">
+                <div class="watchTitle">{{el.title}}</div>
+                <ul>
+                    <li v-for="item in el.list">
+                        <img class="cover" :src="item.cover_pic">
+                        <img class="like" src="/static/image/home/no_like.png" v-if="item.is_like==0">
+                        <img class="like" src="/static/image/home/like.png" v-if="item.is_like==1">
+                        <div>
+                            <h5>
+                                {{item.title}}
+                            </h5>
+                            <span>{{item.price}}</span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="moreBtn">
+                    查看更多
+                </div>
+            </div>
+            <div class="watchHead">
+                <div class="watchTitle">历史腕表</div>
+                <ul>
+                    <li v-for="item in history.list">
+                        <img class="cover" :src="item.cover_pic">
+                        <img class="like" src="/static/image/home/no_like.png" v-if="item.is_like==0">
+                        <img class="like" src="/static/image/home/like.png" v-if="item.is_like==1">
+                        <div>
+                            <h5>
+                                {{item.title}}
+                            </h5>
+                            <span>{{item.price}}</span>
+                        </div>
+                    </li>
+                    <infinite-loading :on-infinite="onInfinite" ref="infiniteLoading">
+                        <span slot="no-more">没有更多数据</span>
+                        <span slot="no-results">没有更多数据</span>
+                    </infinite-loading>
+                </ul>
+            </div>
+        </div>
+    </main>
+    {include file="public/footer" }
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+{load file='/static/js/vue-infinite-loading.js'}
+<script>
+    new Vue({
+        el:'#app',
+        data: {
+            toolbarNum:0,
+            isShow:false,
+            aside_num:null,
+            langName:'zh',
+            lang:'',
+            brand_list: {
+                title:'人气腕表',
+                list:[
+                    {
+                        title:'百达翡丽',
+                        cover_pic:'/static/image/test.jpg'
+                    }
+                ]
+            },
+            watch_list:[
+                {
+                    title:'人气腕表',
+                    list:[
+                        {
+                            title:'百达翡丽',
+                            cover_pic:'/static/image/test.jpg',
+                            price:'HK $3,000',
+                            is_like:0
+                        },
+                        {
+                            title:'百达翡丽',
+                            cover_pic:'/static/image/test.jpg',
+                            price:'HK $3,000',
+                            is_like:1
+                        },
+                        {
+                            title:'百达翡丽',
+                            cover_pic:'/static/image/test.jpg',
+                            price:'HK $3,000',
+                            is_like:1
+                        },
+                        {
+                            title:'百达翡丽',
+                            cover_pic:'/static/image/test.jpg',
+                            price:'HK $3,000',
+                            is_like:1
+                        }
+                    ]
+                },
+                {
+                    title:'人气腕表',
+                    list:[
+                        {
+                            title:'百达翡丽',
+                            cover_pic:'/static/image/test.jpg',
+                            price:'HK $3,000',
+                            is_like:0
+                        },
+                        {
+                            title:'百达翡丽',
+                            cover_pic:'/static/image/test.jpg',
+                            price:'HK $3,000',
+                            is_like:1
+                        },
+                        {
+                            title:'百达翡丽',
+                            cover_pic:'/static/image/test.jpg',
+                            price:'HK $3,000',
+                            is_like:1
+                        },
+                        {
+                            title:'百达翡丽',
+                            cover_pic:'/static/image/test.jpg',
+                            price:'HK $3,000',
+                            is_like:1
+                        }
+                    ]
+                }
+            ],
+            history:{
+                list:[
+                    {
+                        title:'百达翡丽',
+                        cover_pic:'/static/image/test.jpg',
+                        price:'HK $3,000',
+                        is_like:0
+                    },
+                    {
+                        title:'百达翡丽',
+                        cover_pic:'/static/image/test.jpg',
+                        price:'HK $3,000',
+                        is_like:1
+                    },
+                    {
+                        title:'百达翡丽',
+                        cover_pic:'/static/image/test.jpg',
+                        price:'HK $3,000',
+                        is_like:1
+                    },
+                    {
+                        title:'百达翡丽',
+                        cover_pic:'/static/image/test.jpg',
+                        price:'HK $3,000',
+                        is_like:1
+                    }
+                ],
+                page:{
+                    p:1,
+                    total_pages:1
+                }
+            }
+        },
+        methods:{
+            toolbarClick(index){
+                switch (index){
+                    case 0:
+                        location.href = '/v1/index'
+                        break;
+                    case 1:
+                        location.href = '/v1/search'
+                        break;
+                    case 2:
+                        location.href = '/v1/like'
+                        break;
+                    case 3:
+                        location.href = '/v1/index'
+                        break;
+                }
+            },
+            openAside(index){
+                this.aside_num = index
+            },
+            aside(){
+                this.isShow = !this.isShow
+                this.aside_num = null
+            },
+            loginClick(){
+                location.href = `/v1/login`
+            },
+            onInfinite() {
+                let self = this
+                setTimeout(() => {
+                    if(self.history.list.length<=100){
+                        self.history.list = self.history.list.concat(self.history.list)
+                        self.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+                    }else{
+                        self.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                    }
+                }, 1000);
+            },
+        },
+        mounted(){
+            for(let i = 0;i<20;i++){
+                this.brand_list.list.push(this.brand_list.list[0])
+            }
+        },
+        components: {
+            VueInfiniteLoading:VueInfiniteLoading.default,
+        }
+    });
+</script>
+</body>
+</html>

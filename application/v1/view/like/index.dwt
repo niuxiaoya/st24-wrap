@@ -1,0 +1,143 @@
+{include file="public/wrap_header"}
+{load file='/static/css/public_head.css'}
+{load file='/static/css/public_foot.css'}
+{load file='/static/css/like.css'}
+{load file='/static/js/public_f.js'}
+</head>
+<body>
+<div id="app">
+    {include file="public/header"}
+    {include file="public/aside_left"}
+    <main class="like_main">
+        <div class="watchTitle">{{lists.page.total_count?lists.page.total_count:0}}{$Think.lang.wish_lists}</div>
+        <ul>
+            <li v-for="(item,index) in lists.list" @click="openDetail(item)">
+                <div class="cover">
+                    <img :src="item.cover_pic" v-lazy="item.cover_pic">
+                </div>
+                <img class="like" :src="item.is_collection==0?'/static/image/home/no_like.png':'/static/image/home/like.png'" @click.stop="likeClick(item,index)">
+                <div>
+                    <h5>
+                        {{item.title}}
+                    </h5>
+                    <span>{{item.price}}</span>
+                </div>
+            </li>
+            <infinite-loading :on-infinite="onInfinite" ref="infiniteLoading">
+                <span slot="no-more"><span v-if="lists.page.total_pages>1">{$Think.lang.no_more}</span></span>
+                <span slot="no-results">{$Think.lang.no_more}</span>
+            </infinite-loading>
+        </ul>
+    </main>
+    {include file="public/footer" }
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{load file='/static/js/vue-infinite-loading.js'}
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            toolbarNum:2,
+            isShow:false,
+            aside_num:null,
+            langName:'',
+            lists:{
+                list:[],
+                page:{
+                    p:0,
+                    total_pages:1
+                }
+            }
+        },
+        methods:{
+            likeClick(item,index){
+                service.delete('/like/index',{params:{method:3,gid:item.gid}}).then(res=>{
+                    if(parseInt(res.data.errcode)==0){
+                        this.lists.list.splice(index,1)
+                        this.lists.page.total_count -= 1                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            },
+            toolbarClick(index){
+                switch (index){
+                    case 0:
+                        location.href = '/home'
+                        break;
+                    case 1:
+                        location.href = '/search'
+                        break;
+                    case 2:
+                        location.href = '/like'
+                        break;
+                    case 3:
+                        location.href = '/message'
+                        break;
+
+                }
+            },
+            openDetail(item){
+                if(item.gid){
+                    location.href = `/like/detail?gid=${item.gid}`
+                }else{
+                    return false
+                }
+            },
+            openAside(index){
+                this.aside_num = index
+                switch (index){
+                    case 1:
+                        location.href = '/home'
+                        break;
+                    case 2:
+                        location.href = '/home/setting'
+                        break;
+                    case 3:
+                        location.href = '/home/lang'
+                        break;
+                }
+            },
+            aside(){
+                this.isShow = !this.isShow
+                this.aside_num = null
+            },
+            loginClick(){
+                location.href = `/login`
+            },
+            onInfinite() {
+                let self = this
+                setTimeout(() => {
+                    let self = this
+                    if (self.lists.page.p > self.lists.page.total_pages) {
+                        this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
+                        return false
+                    }
+                    self.lists.page.p++
+                    service.get('/like/index',{params:{p:self.lists.page.p,method:1}}).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            self.lists.list = self.lists.list.concat(res.data.data)
+                            self.lists.page = res.data.page
+                            self.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+                        }else{
+                            self.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                        self.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                    })
+                }, 1000);
+            },
+        },
+        mounted(){
+            this.langName = localStorage.getItem('lang')?localStorage.getItem('lang').split(',')[0]:'{$Think.lang.zh_cn}'
+        },
+        components: {
+            VueInfiniteLoading:VueInfiniteLoading.default,
+        }
+    });
+</script>
+</body>
+</html>

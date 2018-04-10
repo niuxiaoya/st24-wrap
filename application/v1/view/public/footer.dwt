@@ -1,0 +1,14 @@
+<ul class="public_foot">
+    <li @click="toolbarClick(0)" :class="{active:toolbarNum==0}">
+        <span></span>
+    </li>
+    <li @click="toolbarClick(1)" :class="{active:toolbarNum==1}">
+        <span></span>
+    </li>
+    <li @click="toolbarClick(2)" :class="{active:toolbarNum==2}">
+        <span></span>
+    </li>
+    <li @click="toolbarClick(3)" :class="{active:toolbarNum==3}">
+        <span></span>
+    </li>
+</>

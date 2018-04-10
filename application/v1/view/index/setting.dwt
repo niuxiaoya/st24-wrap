@@ -1,0 +1,78 @@
+{include file="public/public_header"}
+{load file='/static/css/setting.css'}
+<title>{$Think.lang.setting}</title>
+</head>
+<body>
+<div id="app">
+    <main class="home_main">
+        <ul>
+            <li v-if="'{$login_val}'==1" @click="location.href = '/home/user'">
+                <div>
+                    {$Think.lang.essential_info}
+                </div>
+                <img src="/static/image/public/arrow_right.png">
+            </li>
+            <li v-if="'{$login_val}'==1" @click="location.href = '/like/address_list'">
+                <div>
+                    {$Think.lang.receiving_address}
+                </div>
+                <img src="/static/image/public/arrow_right.png">
+            </li>
+            <li @click="location.href = '/home/lang'">
+                <div>
+                    {$Think.lang.lang_selection}
+                </div>
+                <p>{{langName}}</p>
+                <img src="/static/image/public/arrow_right.png">
+            </li>
+            <li @click="location.href='/home/currency'">
+                <div>
+                    {$Think.lang.choice_currency}
+                </div>
+                <p>
+                    {{priceName}}
+                </p>
+                <img src="/static/image/public/arrow_right.png">
+            </li>
+        </ul>
+        <div class="logout" v-if="'{$login_val}'==1" @click="logout()">
+            {$Think.lang.logout}
+        </div>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            lang:'',
+            langName:'',
+            priceName:'CN￥'
+        },
+        methods:{
+            langClick(item){
+                localStorage.setItem('lang',item.label)
+                location.href = '/home'
+            },
+            logout(){
+                service.post('/login/quit').then(res=>{
+                    if(parseInt(res.data.errcode)==0){
+                        this.$toast('{$Think.lang.logout}')
+                        location.href = '/login'
+                    }else{
+                        this.$toast(res.data.msg)
+                    }
+                })
+            }
+        },
+        mounted(){
+            this.priceName = localStorage.getItem('currency')?localStorage.getItem('currency').split(',')[1]:'HKD HK$'
+            this.langName = localStorage.getItem('lang')?localStorage.getItem('lang').split(',')[0]:'{$Think.lang.zh_cn}'
+        }
+    });
+</script>
+</body>
+</html>

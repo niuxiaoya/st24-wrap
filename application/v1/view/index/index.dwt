@@ -1,0 +1,261 @@
+{include file="public/wrap_header"}
+    {load file='/static/css/public_head.css'}
+    {load file='/static/css/public_foot.css'}
+    {load file='/static/css/public.css'}
+    {load file='/static/css/home.css'}
+    {load file='/static/js/public_f.js'}
+<title>SWISSTIME 24H</title>
+</head>
+<body>
+<div id="app" :class="{isHide:isShow}">
+    {include file="public/header"}
+    {include file="public/aside_left"}
+    <div class="banner">
+        {if !empty($banner)}
+            <mt-swipe :auto="4000">
+                {volist name="banner" id="vo"}
+                    <mt-swipe-item>
+                        <img src="{$vo.file_pic}" v-lazy="'{$vo.file_pic}'" @click="location.href='{$vo.url}'">
+                    </mt-swipe-item>
+                {/volist}
+            </mt-swipe>
+        {/if}
+    </div>
+    <main class="home_main">
+        <div class="topBrand">
+            <h5>
+                {$Think.lang.top_brand}
+            </h5>
+            <ul>
+                {volist name="banner_second" id="vo"  key="item"}
+                    <li @click="location.href =`/search/search_res?brand_id=${'{$vo.id}'}`">
+                        <p>
+                            <img src="{$vo.file_pic}" alt="{$vo.name}" v-lazy="`{$vo.file_pic}`">
+                        </p>
+                        <div>
+                            {$vo.name}
+                        </div>
+                    </li>
+                {/volist}
+            </ul>
+        </div>
+        <div class="wrapWatch">
+            {volist name="watch_list_arr" id="vo"}
+                <div class="watchHead">
+                        <div class="watchTitle">{$vo.name}</div>
+                        <ul>
+                            {volist name="vo.watch_data" id="vlcont" key="item"}
+                                <li @click="openDetail({gid:'{$vlcont.gid}',title:'{$vo.name}'})">
+                                    <div class="cover">
+                                        <img src="{$vlcont.is_collection}" v-lazy="'{$vlcont.cover_pic}'">
+                                    </div>
+                                    <img class="like {$vlcont.gid}" :src="'{$vlcont.is_collection}'==0?'/static/image/home/no_like.png':'/static/image/home/like.png'"
+                                         @click.stop="like('{$vlcont.gid}')">
+                                    <div>
+                                        <h5>
+                                            {$vlcont.title}
+                                        </h5>
+                                        <span>{$vlcont.price}</span>
+                                    </div>
+                                </li>
+                            {/volist}
+                        </ul>
+                        <div class="moreBtn" @click="moreClick({$vo.code})" v-if="{$vo.is_more}>0">
+                           {$Think.lang.more}
+                        </div>
+                </div>
+            {/volist}
+            <div class="watchHead">
+                <div class="watchTitle">{$Think.lang.historical_watch}</div>
+                <ul>
+                    <li v-for="item in history.list" @click="openDetail(item)">
+                        <div class="cover">
+                            <img :src="item.cover_pic" v-lazy="item.cover_pic">
+                        </div>
+                        <img class="like" :src="item.is_collection==0?'/static/image/home/no_like.png':'/static/image/home/like.png'" @click.stop="likeClick(item)">
+                        <div>
+                            <h5>
+                                {{item.title}}
+                            </h5>
+                            <span>{{item.price}}</span>
+                        </div>
+                    </li>
+                    <infinite-loading :on-infinite="onInfinite" ref="infiniteLoading">
+                        <span slot="no-more"><span v-if="history.page.total_pages>1">{$Think.lang.no_more}</span></span>
+                        <span slot="no-results">{$Think.lang.no_more}</span>
+                    </infinite-loading>
+                </ul>
+            </div>
+        </div>
+    </main>
+    {include file="public/footer" }
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{load file='/static/js/vue-infinite-loading.js'}
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            toolbarNum:0,
+            isShow:false,
+            aside_num:null,
+            langName:'',
+            userInfo:{},
+            brand_list: {
+                    title:'人气腕表',
+                list:[
+                    {
+                        title:'百达翡丽',
+                        cover_pic:'/static/image/test.jpg'
+                    }
+                ]
+            },
+            history:{
+                list:[],
+                page:{
+                    p:0,
+                    total_pages:1
+                }
+            }
+        },
+        methods:{
+            like(item){
+                if(this.userInfo&&!this.userInfo.uid){
+                    this.$messagebox.confirm('{$Think.lang.no_login}').then(action => {
+                        if (action == 'confirm') {
+                            location.href = `/login`
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    })
+                    return false
+                }
+                let reg = /no_like/
+                if(reg.test(document.getElementsByClassName(`${item}`)[0].src)){
+                    service.post('/like/index',{method:2,gid:item}).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            document.getElementsByClassName(`${item}`)[0].src = '/static/image/home/like.png'
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }else{
+                    service.delete('/like/index',{params:{method:3,gid:item}}).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            document.getElementsByClassName(`${item}`)[0].src = '/static/image/home/no_like.png'
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }
+            },
+            likeClick(item){
+                if(parseInt(item.is_collection)==0){
+                    service.post('/like/index',{method:2,gid:item.gid}).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            item.is_collection=1
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }else{
+                    service.delete('/like/index',{params:{method:3,gid:item.gid}}).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            item.is_collection=0
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }
+            },
+            toolbarClick(index){
+                switch (index){
+                    case 0:
+                        location.href = '/home'
+                        break;
+                    case 1:
+                        location.href = '/search'
+                        break;
+                    case 2:
+                        location.href = '/like'
+                        break;
+                    case 3:
+                        location.href = '/message'
+                        break;
+                }
+            },
+            openAside(index){
+                this.aside_num = index
+                switch (index){
+                    case 1:
+                        if(this.userInfo.uid){
+                            location.href = '/home/record'
+                        }else{
+                            this.$messagebox.confirm('{$Think.lang.no_login}').then(action => {
+                                if (action == 'confirm') {
+                                    location.href = `/login`
+                                }
+                            }).catch(err => {
+                                console.log(err)
+                            })
+                        }
+                        break;
+                    case 2:
+                        location.href = '/home/setting'
+                        break;
+                    case 3:
+                        location.href = '/home/lang'
+                        break;
+                }
+            },
+            aside(){
+                this.isShow = !this.isShow
+                this.aside_num = null
+            },
+            openDetail(item){
+                location.href = `/like/detail?gid=${item.gid}&keywords=${item.title}`
+            },
+            loginClick(){
+                location.href = `/login`
+            },
+            moreClick(item){
+                location.href = `/search/search_res?category_code=${item}`
+            },
+            onInfinite() {
+                setTimeout(() => {
+                    let self = this
+                    if (self.history.page.p > self.history.page.total_pages) {
+                        this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
+                        return false
+                    }
+                    self.history.page.p++
+                    service.get('/home/history',{params:{p:self.history.page.p}}).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            self.history.list = self.history.list.concat(res.data.data)
+                            self.history.page = res.data.page
+                            self.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+                        }else{
+                            self.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                        self.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                    })
+                }, 1000);
+            },
+        },
+        mounted(){
+            this.userInfo = JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data?JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data:{}
+            this.langName = localStorage.getItem('lang')?localStorage.getItem('lang').split(',')[0]:'{$Think.lang.zh_cn}'
+
+        },
+        components: {
+            VueInfiniteLoading:VueInfiniteLoading.default,
+        }
+    });
+</script>
+</body>
+</html>

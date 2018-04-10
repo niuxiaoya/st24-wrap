@@ -1,0 +1,188 @@
+{include file="public/public_header"}
+{load file='/static/css/home_order.css'}
+<title>{$Think.lang.order_info}</title>
+</head>
+<body>
+<div id="app">
+    <header class="headInfo">
+        <div class="watchInfo">
+            <img src="{$paceorder['data']['goods']['cover_pic']}">
+            <div class="headTile">
+                <h5>
+                    {$paceorder['data']['goods']['title']}
+                </h5>
+                <span>
+                 {$paceorder['data']['goods']['price']}
+            </span>
+            </div>
+        </div>
+        <div class="price">
+            <div>
+                {$Think.lang.total}
+            </div>
+            <span>
+                {$paceorder['data']['goods']['price']}
+            </span>
+        </div>
+    </header>
+    <main class="home_main">
+        <div class="deliveryMethod">
+            <div>
+                {$Think.lang.distribution_method}
+            </div>
+            <p>{{deliveryName}}<img src="/static/image/public/arrow_right.png"></p>
+            <select v-model="post.delivery_method" @change="methodChange">
+                <option v-for="item in options" :value="item.val">{{item.label}}</option>
+            </select>
+        </div>
+        <div class="address">
+            <div class="addressTitle">
+                {$Think.lang.receiving_address}
+            </div>
+            {if $paceorder['data']['default_address']!=''}
+                <ul>
+                    <li>
+                        {$paceorder['data']['default_address']['receiver']}
+                    </li>
+                    <li>
+                        {$paceorder['data']['default_address']['street']},{$paceorder['data']['default_address']['address']}
+                    </li>
+                    <li>
+                        {$paceorder['data']['default_address']['prov']},{$paceorder['data']['default_address']['postcode']}
+                    </li>
+                    <li>
+                        <span>+86</span>
+                        {$paceorder['data']['default_address']['receiver_tel']}
+                    </li>
+                </ul>
+            {/if}
+
+            {if $paceorder['data']['default_address']==''}
+                <span class="add" @click="add()">
+                    {{'{$Think.lang.add_new_address}'}}
+                </span>
+            {else /}
+                <span class="add" @click="add('{$paceorder['data']['default_address']['id']}')">
+                    {{'{$Think.lang.choice_address}'}}
+                </span>
+            {/if}
+        </div>
+        <div class="deliveryMethod" @click="message">
+            <div>
+                {$Think.lang.service}
+            </div>
+            <img src="/static/image/public/arrow_right.png">
+        </div>
+        <div class="orderBtn">
+            {if $paceorder['data']['default_address']==''}
+                <div @click="sub()">
+                    {$Think.lang.sub_order}
+                </div>
+            {else /}
+                <div @click="sub('{$paceorder['data']['default_address']['id']}')">
+                    {$Think.lang.sub_order}
+                </div>
+            {/if}
+
+        </div>
+    </main>
+</div>
+<script language="javascript" type="text/javascript">
+    NTKF_PARAM = {
+        siteid:"kf_10178",                   //siteid：企业ID，为固定值，必填
+        sellerid:"nt_XXXX",                 //sellerid：商户ID，集成商户时填写(**当有商户时，集成使用该字段**)
+        settingid:"kf_10178_1522134627517",           //settingid：接待组ID，为固定值，必填
+        uid:"",                            //uid：用户ID，未登录可以为空，但不能给null，uid赋予的值在显示到小能客户端上
+        uname:"",                           //uname：用户名称，未登录可以为空，但不能给null，uname赋予的值显示到小能客户端上
+        isvip:"0",                         //isvip：是否为vip用户，0代表非会员，1代表会员，取值显示到小能客户端上
+        userlevel:"0",                      //userlevel：网站自定义会员级别，0-N，可根据选择判断，取值显示到小能客户端上
+        erpparam:"erp",                     //erpparam：erp功能的扩展字段，可选，购买erp功能后用于erp功能集成
+        itemid:"63",                       //itemid：(必填)商品ID
+        itemparam:""                       //itemparam：(选填)itemparam为商品接口扩展字段，用于商品接口特殊要求集成
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script type="text/javascript" src="http://dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_10178" charset="utf-8"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{load file='/static/js/public_f.js'}
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            maintainShow:false,
+            guaranteeShow:false,
+            deliveryName:'{$Think.lang.express}',
+            gid:'',
+            options:[
+                {
+                    val:1,
+                    label:'{$Think.lang.express}'
+                },
+                {
+                    val:2,
+                    label:'{$Think.lang.line_goods}'
+                }
+            ],
+            post:{
+                address_id:'',
+                delivery_method:1,
+                gid:''
+            },
+            userInfo:{},
+        },
+        methods:{
+            methodChange(){
+                for(let v of this.options){
+                    if(this.post.delivery_method == v.val){
+                        this.deliveryName = v.label
+                        this.post.delivery_method = v.val
+                    }
+                }
+            },
+            message(){
+                NTKF.im_openInPageChat('kf_10178_1522134627517')
+            },
+           add(item){
+               if(item){
+                   location.href = '/like/address_list'
+               }else{
+                   location.href = '/like/add'
+               }
+           },
+            sub(item){
+                if(item){
+                    this.post.address_id = item
+                    service.post('/like/orderCreate',this.post).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            location.href = `/like/pay?bill_sn=${res.data.bill_sn}`
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }else{
+                    this.$messagebox.confirm('请添加地址').then(action => {
+                        if (action == 'confirm') {
+                            location.href = `/like/add`
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    })
+                }
+            }
+        },
+        mounted(){
+            this.post.gid = getUrlData('gid')
+        },
+        created(){
+            this.userInfo = JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data?JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data:{}
+            if(this.userInfo){
+                NTKF_PARAM.uname = this.userInfo.username?this.userInfo.username:this.userInfo.tel
+                NTKF_PARAM.uid = `${this.userInfo.uid}`
+            }
+        }
+    });
+</script>
+</body>
+</html>

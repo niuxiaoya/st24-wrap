@@ -1,0 +1,9 @@
+<header class="public_header">
+    <div class="head_left" @click="aside">
+        <img src="/static/image/home/nav.png">
+    </div>
+    <div class="head_right" @click="location.href='/home/currency'">
+        <p>{{localStorage.getItem('currency')?localStorage.getItem('currency').split(',')[1]:'HKD HK$'}}</p>
+    </div>
+</header>
+

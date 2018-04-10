@@ -1,0 +1,62 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+ul{
+  li{
+    list-style-type: none;
+  }
+}
+
+input{
+  border:none;
+  outline:none;
+}
+
+#app{
+  overflow: hidden;
+  background: #f7f7f7;
+  min-height: 100vh;
+}
+
+
+//弹出信息toast样式
+.mint-toast {
+  max-width: 100% !important;
+  //transition: opacity .2s linear!important;
+}
+
+//弹出信息toast样式
+.mint-toast.is-placemiddle {
+  top: 20px!important;
+  width: 100% !important;
+  border-radius: 0 !important;
+  &.bg{
+    background: rgba(3,3,3,0.6)!important;
+  }
+}
+
+//懒加载图片
+img[lazy=loading] {
+  width: 40px!important;
+  height: 40px!important;
+  margin: auto;
+}
+
+//弹出confirm样式
+.mint-msgbox{
+  border-radius: 10px!important;
+  width: 250px!important;
+  .mint-msgbox-cancel{
+    color: #006aff;
+  }
+  .mint-msgbox-confirm{
+    color: #006aff;
+  }
+  .mint-msgbox-message{
+    color: #333!important;
+    font-size: 12px!important;
+    line-height: 22px!important;
+  }
+}

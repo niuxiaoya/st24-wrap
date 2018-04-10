@@ -1,0 +1,259 @@
+{include file="public/public_header"}
+{load file='/static/css/home_detail.css'}
+{load file='/static/js/public_f.js'}
+
+<meta name="description" content="{$brank_data_arr.data.seo_description}"/>
+<meta name="keyword" content="{$brank_data_arr.data.seo_keywords}"/>
+<title>{$brank_data_arr.data.title}</title>
+</head>
+<body>
+<div id="app">
+    <header>
+        <div class="banner">
+            <mt-swipe :auto="0">
+                <mt-swipe-item v-for="(item,index) in imgArr">
+                    <img :src="item" @click="selectImg(item,index)">
+                </mt-swipe-item>
+            </mt-swipe>
+            <img class="like"
+                 :src="watchInfo.is_collection==0?'/static/image/home/no_like.png':'/static/image/home/like.png'"
+                 @click="likeClick">
+        </div>
+        <div class="headWrap">
+            <div class="title">
+                {$brank_data_arr.data.title}
+                <span>{$brank_data_arr.data.fineness_name}</span>
+            </div>
+            <div class="price">
+                {$brank_data_arr.data.price}
+                <span>{$brank_data_arr.data.price}</span>
+            </div>
+            <ul>
+                <li class="pay" @click="pay">
+                    {$Think.lang.buy_now}
+                </li>
+                <li class="message" @click="message()">
+                    <img src="/static/image/toolbar/message.png">{$Think.lang.service}
+                </li>
+            </ul>
+        </div>
+    </header>
+    <main class="home_main">
+        <div class="wrap">
+            <div class="title">
+                <a name="cover">{$Think.lang.img_text}</a>
+            </div>
+            <div v-html="watchInfo.details" class="text"></div>
+        </div>
+        <div class="wrap">
+            <div class="title">
+                <a name="info">{$Think.lang.parameter_watch}</a>
+            </div>
+            <ul class="infoUl">
+                <!--<li v-for="item in watchInfo.list">-->
+                    <!--<div>-->
+                        <!--{{item[0]}}-->
+                    <!--</div>-->
+                    <!--<p>-->
+                        <!--{{item[1]}}-->
+                    <!--</p>-->
+                <!--</li>-->
+                <li>
+                    <div>{$Think.lang.location}</div>
+                    <p>{{watchInfo.country_name|| '{$Think.lang.none}'}}</p>
+                </li>
+                <li>
+                    <div>{$Think.lang.delivery_time}</div>
+                    <p>{$Think.lang.money_day}</p>
+                </li>
+                <li>
+                    <div>{$Think.lang.shape}</div>
+                    <p>{{watchInfo.shape_name|| '{$Think.lang.none}'}}  </p>
+                </li>
+                <li>
+                    <div>{$Think.lang.diameter}</div>
+                    <p>{{watchInfo.diameter|| '{$Think.lang.none}'}}</p>
+                </li>
+                <li>
+                    <div>{$Think.lang.material}</div>
+                    <p>{{watchInfo.market_price||'{$Think.lang.none}' }}</p>
+                </li>
+                <li>
+                    <div>{$Think.lang.complex_function}</div>
+                    <p>{{watchInfo.function_name || '{$Think.lang.none}' }}</p>
+                </li>
+            </ul>
+        </div>
+        <div class="wrap">
+            <div class="title" @click="maintainShow=!maintainShow">
+                <a name="maintain">{$Think.lang.maintenance_method}</a>
+                <img src="/static/image/public/down.png" :class="{active:maintainShow}">
+            </div>
+            <div v-html="watchInfo.maintenance_method" class="text" v-show="maintainShow"></div>
+        </div>
+        <div class="wrap">
+            <div class="title" @click="guaranteeShow=!guaranteeShow">
+                <a name="guarantee">{$Think.lang.buyer_guarantee}</a>
+                <img src="/static/image/public/down.png" :class="{active:guaranteeShow}">
+            </div>
+            <div v-html="watchInfo.promise" class="text" v-show="guaranteeShow"></div>
+        </div>
+
+    </main>
+    <transition name="slide-fade" class="fadeView">
+        <div v-show="show" @click="hideImageView">
+            <vue-preview :img-arr="source"
+                         show-image-view
+                         :imageIndex="imageIndex"
+                         v-on:hideImage="hideImageView">
+            </vue-preview>
+        </div>
+    </transition>
+</div>
+<script language="javascript" type="text/javascript">
+    NTKF_PARAM = {
+        siteid: "kf_10178",                   //siteid：企业ID，为固定值，必填
+        sellerid: "",                 //sellerid：商户ID，集成商户时填写(**当有商户时，集成使用该字段**)
+        settingid: "kf_10178_1522134627517",           //settingid：接待组ID，为固定值，必填
+        uid: "",                            //uid：用户ID，未登录可以为空，但不能给null，uid赋予的值在显示到小能客户端上
+        uname: "",                           //uname：用户名称，未登录可以为空，但不能给null，uname赋予的值显示到小能客户端上
+        isvip: "0",                         //isvip：是否为vip用户，0代表非会员，1代表会员，取值显示到小能客户端上
+        userlevel: "0",                      //userlevel：网站自定义会员级别，0-N，可根据选择判断，取值显示到小能客户端上
+        erpparam: "erp",                     //erpparam：erp功能的扩展字段，可选，购买erp功能后用于erp功能集成
+        itemid: "",                       //itemid：(必填)商品ID
+        itemparam: ""                       //itemparam：(选填)itemparam为商品接口扩展字段，用于商品接口特殊要求集成
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript" src="http://dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_10178" charset="utf-8"></script>
+{load file='/static/js/vue-preview.min.js'}
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el: '#app',
+        data: {
+            maintainShow: false,
+            guaranteeShow: false,
+            userInfo:{
+                gid: '',
+            },
+            watchInfo: {
+                is_collection: 0,
+                list: [],
+                details_content: '',
+                maintenance_content: '',
+                guarantee_content: '',
+            },
+            imgArr: [],
+            source: [],
+            imageIndex: 0,
+            show: false,
+        },
+        methods: {
+            likeClick() {
+                if(this.userInfo&&!this.userInfo.uid){
+                    this.$messagebox.confirm('{$Think.lang.no_login}').then(action => {
+                        if (action == 'confirm') {
+                            location.href = `/login`
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    })
+                    return false
+                }
+                if (this.watchInfo.is_collection == 0) {
+                    service.post('/like/index',{method:2,gid:this.watchInfo.gid}).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            this.watchInfo.is_collection = 1
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                } else {
+                    service.delete('/like/index',{params:{method:3,gid:this.watchInfo.gid}}).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            this.watchInfo.is_collection = 0
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }
+            },
+            pay() {
+                if(this.userInfo.uid){
+                    location.href = `/like/order?gid=${this.watchInfo.gid}`
+                }else{
+                    this.$messagebox.confirm('{$Think.lang.no_login}').then(action => {
+                        if (action == 'confirm') {
+                            location.href = `/login`
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    })
+                }
+            },
+            hideImageView() {
+                document.body.style.overflow = 'visible'
+                this.show = false
+            },
+            message() {
+                NTKF.im_openInPageChat('kf_10178_1522134627517')
+            },
+            selectImg(item, index) {
+                document.body.style.height = '100vh'
+                document.body.style.overflow = 'hidden'
+                let wid = document.body.clientWidth
+                this.imageIndex = index
+                let dom = document.querySelector("#imageView").children[0].children[0]
+                dom.style.transform = `scaleZ(1.01) translate3d(-${wid * this.imageIndex}px, 0px, 0px)`
+                this.show = true
+            },
+        },
+        mounted() {
+            let urlData = {
+                gid: getUrlData('gid'),
+                keywords: getUrlData('keywords'),
+            }
+            service.get('/like/detail_api', {params: urlData}).then(res => {
+                if (parseInt(res.data.errcode) == 0) {
+                    this.watchInfo.gid = res.data.data.gid
+                    this.imgArr = res.data.data.file_pic.split(',')
+                    this.watchInfo.is_collection = res.data.data.is_collection
+                    this.watchInfo= res.data.data
+                    this.watchInfo.list = res.data.data.other_attr.split(';')
+
+                    this.watchInfo.details_content = res.data.data.details_wap
+                    this.watchInfo.maintenance_content = res.data.data.maintenance_method_wap
+                    this.watchInfo.guarantee_content = res.data.data.details_wap
+                    for (let v in this.watchInfo.list) {
+                        this.watchInfo.list[v] = this.watchInfo.list[v].split(',')
+                        if (this.watchInfo.list[v].length <= 1) {
+                            this.watchInfo.list.splice(v, 1)
+                        }
+                    }
+                    for (let v of this.imgArr) {
+                        this.source.push(v.replace('details', 'source'))
+                    }
+                } else {
+
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+        },
+        created(){
+            this.userInfo = JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data?JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data:{}
+            if(this.userInfo&&this.userInfo.uid){
+                NTKF_PARAM.uname = this.userInfo.username?this.userInfo.username:this.userInfo.tel
+                NTKF_PARAM.uid = `${this.userInfo.uid}`
+                NTKF_PARAM.itemid = getUrlData('gid')
+            }else{
+                NTKF_PARAM.uid = new Date().getTime()
+            }
+        }
+    });
+</script>
+</body>
+</html>

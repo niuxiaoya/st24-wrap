@@ -1,0 +1,436 @@
+{include file="public/public_header"}
+{load file='/static/css/screen.css'}
+{load file='/static/js/public_f.js'}
+<title>{$Think.lang.screen}</title>
+</head>
+<body>
+<div id="app">
+    <header class="header">
+        <img src="/static/image/public/closex1.png" @click="history.go(-1)">
+        {$Think.lang.screen}
+        <span @click="removeClick">{$Think.lang.reset}</span>
+    </header>
+    <main class="home_main">
+        <ul class="list">
+            <li class="wrapLi" @click="brandPop = true">
+                <div class="left">
+                    {$Think.lang.brand}
+                </div>
+                <div class="right">
+                    {{val.brandName}}
+                    <img src="/static/image/public/arrow_right.png">
+                </div>
+            </li>
+            <li class="price wrapLi">
+                <div class="priceWrap">
+                    {$Think.lang.price}(HK$)
+                </div>
+                <div class="rang">
+                    <div class="left" :style="sub_form && !!post.price_l && !!post.price_h && (post.price_l > post.price_h ) ? 'border: 1px solid #ed4956;' : ''">
+                        <input type="number" min="0" placeholder="{$Think.lang.minimum}" v-model="post.price_l">
+                    </div>
+                    <span></span>
+                    <div class="right" :style="sub_form && !!post.price_l && !!post.price_h && (post.price_l > post.price_h) ? 'border:  1px solid #ed4956;' : ''">
+                        <input type="number" min="0" placeholder="{$Think.lang.Highest}" v-model="post.price_h">
+                    </div>
+                </div>
+            </li>
+            <li class="wrapLi">
+                <div class="left">
+                    {$Think.lang.gender}
+                </div>
+                <ul>
+                    <li v-for="item in genderList" :class="{active:post.gender_id==item.val}"
+                        @click="post.gender_id = item.val">
+                        {{item.name}}
+                    </li>
+                </ul>
+            </li>
+            <li class="wrapLi" @click="diameterPop = true">
+                <div class="left">
+                    {$Think.lang.diameter}
+                </div>
+                <div class="right">
+                    {{val.diameterName}}
+                    <img src="/static/image/public/arrow_right.png">
+                </div>
+            </li>
+            <li class="wrapLi" @click="materialPop = true">
+                <div class="left">
+                    {$Think.lang.material}
+                </div>
+                <div class="right">
+                    {{val.materialName}}
+                    <img src="/static/image/public/arrow_right.png">
+                </div>
+            </li>
+            <li class="wrapLi" @click="shapePop = true">
+                <div class="left">
+                    {$Think.lang.shape}
+                </div>
+                <div class="right">
+                    {{val.shapeName}}
+                    <img src="/static/image/public/arrow_right.png">
+                </div>
+            </li>
+            <li class="wrapLi"  @click="finenessPop = true">
+                <div class="left">
+                    {$Think.lang.fineness}
+                </div>
+                <div class="right">
+                    {{val.finenessName}}
+                    <img src="/static/image/public/arrow_right.png">
+                </div>
+            </li>
+            <li class="wrapLi" @click="functionPop = true">
+                <div class="left">
+                    {$Think.lang.complex_function}
+                </div>
+                <div class="right">
+                    {{val.functionName}}
+                    <img src="/static/image/public/arrow_right.png">
+                </div>
+            </li>
+        </ul>
+    </main>
+    <div class="complete" @click="sub">
+        {$Think.lang.complete}
+    </div>
+    {//'品牌'}
+    <mt-popup
+            v-model="brandPop"
+            class="popStyle"
+            position="bottom">
+        <div class="title">
+            <img src="/static/image/public/closex1.png" @click="brandPop=false" class="close">
+            {$Think.lang.brand}
+        </div>
+        <ul>
+            <li :class="{active:!post.brand_id}" @click="brandClick()">
+                {$Think.lang.all}
+                <img :src="!post.brand_id?'/static/image/search/searchActive.png':''">
+            </li>
+            <li v-for="item in brandList" :class="{active:post.brand_id==item.id}" @click="brandClick(item)">
+                {{item.name}}
+                <img :src="post.brand_id==item.id?'/static/image/search/searchActive.png':''">
+            </li>
+        </ul>
+    </mt-popup>
+    {//'直径'}
+    <mt-popup
+            v-model="diameterPop"
+            class="popStyle"
+            position="bottom">
+        <div class="title">
+            <img src="/static/image/public/closex1.png" @click="diameterPop=false" class="close">
+            {$Think.lang.diameter}
+        </div>
+        <ul>
+            <li v-for="item in diameterList" :class="{active:diameter_id==item.id}" @click="diameterClick(item)">
+                {{item.label}}
+                <img :src="diameter_id==item.id?'/static/image/search/searchActive.png':''">
+            </li>
+        </ul>
+    </mt-popup>
+    {//'材质'}
+    <mt-popup
+            v-model="materialPop"
+            class="popStyle"
+            position="bottom">
+        <div class="title">
+            <img src="/static/image/public/closex1.png" @click="materialPop=false" class="close">
+            {$Think.lang.material}
+        </div>
+        <ul>
+            <li v-for="item in materialList" :class="{active:post.material_id==item.id}" @click="materialClick(item)">
+                {{item.name}}
+                <img :src="post.material_id==item.id?'/static/image/search/searchActive.png':''">
+            </li>
+        </ul>
+    </mt-popup>
+    {//'形状'}
+    <mt-popup
+            v-model="shapePop"
+            class="popStyle"
+            position="bottom">
+        <div class="title">
+            <img src="/static/image/public/closex1.png" @click="shapePop=false" class="close">
+            {$Think.lang.shape}
+        </div>
+        <ul>
+            <li v-for="item in shapeList" :class="{active:post.shape_id==item.id}" @click="shapeClick(item)">
+                {{item.name}}
+                <img :src="post.shape_id==item.id?'/static/image/search/searchActive.png':''">
+            </li>
+        </ul>
+    </mt-popup>
+    {//'成色'}
+    <mt-popup
+            v-model="finenessPop"
+            class="popStyle"
+            position="bottom">
+        <div class="title">
+            <img src="/static/image/public/closex1.png" @click="finenessPop=false" class="close">
+            {$Think.lang.fineness}
+        </div>
+        <ul>
+            <li v-for="item in finenessList" :class="{active:post.fineness_id==item.id}" @click="finenessClick(item)">
+                {{item.name}}
+                <img :src="post.fineness_id==item.id?'/static/image/search/searchActive.png':''">
+            </li>
+        </ul>
+    </mt-popup>
+    {//'复杂功能'}
+    <mt-popup
+            v-model="functionPop"
+            class="popStyle"
+            position="bottom">
+        <div class="title">
+            <img src="/static/image/public/closex1.png" @click="functionPop=false" class="close">
+            {$Think.lang.complex_function}
+            <img src="/static/image/home/successActive.png" class="success" @click="functionSuccess()">
+        </div>
+        <ul>
+            <li v-for="(item,index) in funList" :class="{active:item.wrap}" @click="functionClick(item)">
+                {{item.name}}
+                <img src="/static/image/search/searchActive.png" v-for="el in post.function_id" v-if="el==item.id">
+            </li>
+        </ul>
+    </mt-popup>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{load file='/static/js/vue-infinite-loading.js'}
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el: '#app',
+        data: {
+            brandPop:false,
+            diameterPop:false,
+            materialPop:false,
+            shapePop:false,
+            finenessPop:false,
+            functionPop:false,
+            diameter_id:'',
+            genderList: [
+                {
+                    name: '{$Think.lang.female_sex}',
+                    val: 2
+                },
+                {
+                    name: '{$Think.lang.male}',
+                    val: 1
+                },
+                {
+                    name: '{$Think.lang.neutral}',
+                    val: 3
+                }
+            ],
+            diameterList: [
+                {
+                    label:'36mm{$Think.lang.following}',
+                    diameter_l:0,
+                    diameter_h:36,
+                    id:1
+                },
+                {
+                    label:'36-39mm',
+                    diameter_l:36,
+                    diameter_h:39,
+                    id:2
+                },
+                {
+                    label:'39-42mm',
+                    diameter_l:39,
+                    diameter_h:42,
+                    id:3
+                },
+                {
+                    label:'42-45mm',
+                    diameter_l:42,
+                    diameter_h:45,
+                    id:4
+                },
+                {
+                    label:'45mm{$Think.lang.above}',
+                    diameter_l:45,
+                    diameter_h:-1,
+                    id:5
+                }
+            ],
+            brandList:[],
+            finenessList:[],
+            shapeList:[],
+            materialList:[],
+            funList:[],
+            val: {
+                brandName: '{$Think.lang.all_brands}',
+                diameterName: '{$Think.lang.alls}',
+                materialName:'{$Think.lang.alls}',
+                shapeName:'{$Think.lang.alls}',
+                functionName:'{$Think.lang.alls}',
+                finenessName:'{$Think.lang.alls}',
+                func:[]
+            },
+            post: {
+                price_l: '',
+                price_h: '',
+                brand_id: '',
+                material_id: '',
+                shape_id: '',
+                gender_id: '',
+                function_id: [],
+                fineness_id: '',
+                diameter_l:'',
+                diameter_h:'',
+            },
+            sub_form: false
+        },
+        methods: {
+            removeClick(){
+                this.post = {
+                    price: 0,
+                    brand_id: '',
+                    material_id: '',
+                    shape_id: '',
+                    gender_id: '',
+                    function_id: [],
+                    fineness_id: '',
+                    diameter_l:'',
+                    diameter_h:'',
+                }
+
+                this.val =  {
+                    brandName: '{$Think.lang.all_brands}',
+                    diameterName: '{$Think.lang.alls}',
+                    materialName:'{$Think.lang.alls}',
+                    shapeName:'{$Think.lang.alls}',
+                    functionName:'{$Think.lang.alls}',
+                    finenessName:'{$Think.lang.alls}',
+                    func:[]
+                }
+            },
+            brandClick(item){
+                if(!item){
+                    this.post.brand_id = ''
+                    this.val.brandName = '{$Think.lang.all_brands}'
+                }else{
+                    this.post.brand_id = item.id
+                    this.val.brandName = item.name
+                }
+                this.brandPop = false
+            },
+            diameterClick(item){
+                this.diameter_id = item.id
+                this.val.diameterName = item.label
+                this.post.diameter_l = item.diameter_l
+                this.post.diameter_h = item.diameter_h
+                this.diameterPop = false
+            },
+            materialClick(item){
+                this.post.material_id = item.id
+                this.val.materialName = item.name
+                this.materialPop = false
+            },
+            shapeClick(item){
+                this.post.shape_id = item.id
+                this.val.shapeName = item.name
+                this.shapePop = false
+            },
+            finenessClick(item){
+                this.post.fineness_id = item.id
+                this.val.finenessName = item.name
+                this.finenessPop = false
+            },
+            functionClick(item){
+                let self = this
+                if(self.post.function_id.indexOf(item.id)==-1){
+                    self.post.function_id.push(item.id)
+                    item.wrap = true
+                    self.val.functionName = self.val.func.push(item.name)
+                    self.val.functionName = self.val.func.join(',')
+                }else{
+                    for(let i =0;i<self.post.function_id.length;i++){
+                        if(self.post.function_id[i]==item.id){
+                            self.post.function_id.splice(i,1)
+                            item.wrap = false
+                            self.val.functionName = self.val.func.splice(i,1)
+                            self.val.functionName = self.val.func.join(',')
+                        }
+                    }
+                }
+            },
+            functionSuccess(){
+                this.functionPop = false
+            },
+            sub(){
+                this.sub_form = true
+                if(!!this.post.price_l && !!this.post.price_h && (this.post.price_l > this.post.price_h)) {
+                    return false
+                }
+                let post = this.post
+                post.function_id = post.function_id.join(',')
+                location.href = `/search/search_res?brand_id=${post.brand_id}&material_id=${post.material_id}&shape_id=${post.shape_id}&gender_id=${post.gender_id}&function_id=${post.function_id}&fineness_id=${post.fineness_id}&diameter_l=${post.diameter_l}&diameter_h=${post.diameter_h}&price_l=${post.price_l}&price_h=${post.price_h}`
+            }
+        },
+        mounted() {
+            //品牌
+            service.get('/search/dict',{params:{params:'brand'}}).then(res=>{
+                if(parseInt(res.data.errcode)==0){
+                    this.brandList = res.data.data
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+            //复杂
+            service.get('/search/dict',{params:{params:'func'}}).then(res=>{
+                if(parseInt(res.data.errcode)==0){
+                    this.funList = res.data.data
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+            //形状
+            service.get('/search/dict',{params:{params:'shape'}}).then(res=>{
+                if(parseInt(res.data.errcode)==0){
+                    this.shapeList = res.data.data
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+            //成色
+            service.get('/search/dict',{params:{params:'fineness'}}).then(res=>{
+                if(parseInt(res.data.errcode)==0){
+                    this.finenessList = res.data.data
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+            //材质
+            service.get('/search/dict',{params:{params:'covermaterial'}}).then(res=>{
+                if(parseInt(res.data.errcode)==0){
+                    this.materialList = res.data.data
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+            this.langName = localStorage.getItem('lang') ? localStorage.getItem('lang') : '中文简体'
+        },
+        watch: {
+            'post.price_l' (val){
+                if(val < 0) {
+                    this.post.price_l = 0
+                }
+            },
+            'post.price_h' (val){
+                if(val < 0) {
+                    this.post.price_h = 0
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

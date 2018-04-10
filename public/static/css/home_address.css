@@ -1,0 +1,62 @@
+.home_main {
+  background: #fff;
+}
+.home_main .title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #e6e6e6;
+  font-weight: bold;
+  font-size: 14px;
+}
+.home_main .title span {
+  font-weight: normal;
+  font-size: 12px;
+  color: #007099;
+}
+.home_main ul {
+  padding-left: 15px;
+}
+.home_main ul li {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 15px 15px 0;
+  box-sizing: border-box;
+  border-bottom: 1px solid #e6e6e6;
+}
+.home_main ul li .wrap {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+.home_main ul li .wrap.active {
+  font-weight: bold;
+}
+.home_main ul li .wrap:last-child {
+  margin: 0;
+}
+.home_main ul li .edit {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.home_main ul li .edit .edit_left {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #999;
+}
+.home_main ul li .edit .edit_left img {
+  margin-right: 5px;
+}
+.home_main ul li:last-child {
+  border-bottom: none;
+}
+.home_main .add {
+  font-size: 12px;
+  color: #007099;
+  padding: 15px 15px 25px 15px;
+  box-sizing: border-box;
+}

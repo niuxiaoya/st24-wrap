@@ -1,0 +1,94 @@
+{include file="public/public_header"}
+{load file='/static/css/search_list.css'}
+{load file='/static/js/public_f.js'}
+</head>
+<body>
+<div id="app">
+    <header class="header">
+        <img src="/static/image/public/closex1.png" @click="location.href = '/search'">
+        <div>
+            <input type="text" placeholder="{$Think.lang.rs_search}" v-model="post.keywords" @keyup.13="openRes()">
+        </div>
+    </header>
+    <main class="home_main">
+        <div class="wrap" v-if="!post.keywords">
+            <h5>
+                {$Think.lang.history_search}
+                <img src="/static/image/search/history_close.png" @click="remove" v-if="historyList.length>0">
+            </h5>
+            <ul>
+                <li v-for="(item,index) in historyList" @click="openRes(item)" v-if="index<10">
+                    <img src="/static/image/search/search.png">
+                    {{item}}
+                </li>
+            </ul>
+        </div>
+        <div class="wrap" v-if="post.keywords">
+            <h5>
+                {$Think.lang.related_search}
+            </h5>
+            <ul>
+                <li v-for="item in list" @click="openDetail(item)">
+                    <img src="/static/image/search/search.png">
+                    {{item.title}}
+                </li>
+            </ul>
+        </div>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            historyList:[],
+            list:[],
+            post:{
+                keywords:''
+            }
+        },
+        methods:{
+            remove(){
+                localStorage.removeItem('history_list')
+                this.historyList = []
+            },
+            openDetail(item){
+                location.href = `/like/detail?gid=${item.gid}`
+            },
+            openRes(item) {
+                let self = this
+                if(item){
+                    location.href = `/search/search_res?title=${item}`
+                }else{
+                    self.historyList.push(this.post.keywords)
+                    self.historyList = self.historyList.reverse()
+                    localStorage.setItem('history_list', self.historyList)
+                    location.href = `/search/search_res?title=${this.post.keywords}`
+                }
+            },
+        },
+        mounted(){
+            if (localStorage.getItem('history_list')) {
+                this.historyList = localStorage.getItem('history_list').split(',') || []
+            }
+        },
+        watch:{
+            'post.keywords'(){
+                service.get('/search/wattl',{params:this.post}).then(res=>{
+                    if(parseInt(res.data.errcode)==0){
+                        this.list = res.data.data
+                    }else{
+                        this.list = []
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{include file="public/public_header"}
+{load file='/static/css/pay_state.css'}
+{load file='/static/js/public_f.js'}
+<title>{$Think.lang.choice_pay_method}</title>
+</head>
+<body>
+<div id="app">
+    <header class="header">
+        <img :src="state?'/static/image/home/pay_success.png':'/static/image/home/pay_error.png'">
+        <div v-html="state?'支付成功':'支付失败'">
+
+        </div>
+        <span>支付金额：{{orderInfo.pay_money}}</span>
+    </header>
+    <main class="home_main">
+        <ul>
+            <li>
+                {$Think.lang.see_order}
+                <img src="/static/image/public/arrow_right.png">
+            </li>
+            <li @click="message">
+                {$Think.lang.service}
+                <img src="/static/image/public/arrow_right.png">
+            </li>
+        </ul>
+    </main>
+</div>
+<script language="javascript" type="text/javascript">
+    NTKF_PARAM = {
+        siteid:"kf_10178",                   //siteid：企业ID，为固定值，必填
+        settingid:"kf_10178_1522134627517",           //settingid：接待组ID，为固定值，必填
+        uid:"",                             //用户ID，未登录可以为空，但不能给null，uid赋予的值在显示到小能客户端上
+        uname:"",                            //未登录可以为空，但不能给null，uname赋予的值显示到小能客户端上
+        isvip:"0",                           //是否为vip用户，0代表非会员，1代表会员，取值显示到小能客户端上
+        userlevel:"0",                       //网站自定义会员级别，0-N，可根据选择判断，取值显示到小能客户端上
+        erpparam:"erp",                        //erpparam为erp功能的扩展字段，可选，购买erp功能后用于erp功能集成
+        orderid:"20170730123456",                //orderid：(选填)订单号
+        orderprice:"12350"                       //orderprice：(选填)订单价格
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script type="text/javascript" src="http://dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_10178" charset="utf-8"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            state:1,
+            method:'',
+            orderInfo:{},
+            orderMoney:{},
+            userInfo:{},
+        },
+        methods:{
+            message(){
+                NTKF.im_openInPageChat('kf_10178_1522134627517')
+            }
+        },
+        mounted(){
+            service.get('/like/orderInfo',{params:{bill_sn:getUrlData('bill_sn')}}).then(res=>{
+                if(parseInt(res.data.errcode)==0){
+                    this.orderInfo = res.data.data.order_info
+                    this.orderMoney = res.data.data
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+        },
+        created(){
+            this.userInfo = JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data?JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data:{}
+            if(this.userInfo){
+                NTKF_PARAM.uname = this.userInfo.username?this.userInfo.username:this.userInfo.tel
+                NTKF_PARAM.uid = `${this.userInfo.uid}`
+            }
+        }
+    });
+</script>
+</body>
+</html>

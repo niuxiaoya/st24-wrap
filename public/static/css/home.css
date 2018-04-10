@@ -1,0 +1,152 @@
+#app {
+  background: #fff;
+}
+#app.isHide {
+  overflow: hidden;
+  height: 100vh;
+}
+.banner {
+  margin-top: 48px;
+}
+.banner .mint-swipe {
+  height: 100vw;
+}
+.banner .mint-swipe .mint-swipe-item img {
+  width: 100%!important;
+  height: 100%!important;
+  object-fit: cover;
+}
+.home_main {
+  margin-bottom: 80px;
+}
+.home_main .topBrand {
+  margin: 40px 0;
+}
+.home_main .topBrand h5 {
+  font-size: 16px;
+  color: #424242;
+  margin-bottom: 15px;
+  padding-left: 15px;
+}
+.home_main .topBrand ul {
+  display: flex;
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 15px;
+}
+.home_main .topBrand ul li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  overflow: hidden;
+  min-width: 122px;
+  margin-right: 12px;
+  background: #ccc;
+}
+.home_main .topBrand ul li div {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #999;
+  background: #fff;
+}
+.home_main .topBrand ul li p {
+  width: 122px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+.home_main .topBrand ul li p img {
+  width: 100%;
+  object-fit: cover;
+  min-height: 70px;
+  max-height: 100%;
+}
+.home_main .wrapWatch {
+  color: #333;
+  padding: 0 15px;
+}
+.home_main .wrapWatch .watchHead {
+  margin-bottom: 15px;
+}
+.home_main .wrapWatch .watchHead .watchTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.home_main .wrapWatch .watchHead ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.home_main .wrapWatch .watchHead ul li {
+  width: calc(100vw / 2 - 22.5px);
+  margin-bottom: 15px;
+  border: 1px solid #e6e6e6;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0px 2px 3px rgba(9, 9, 9, 0.2);
+  position: relative;
+  box-sizing: border-box;
+}
+.home_main .wrapWatch .watchHead ul li div {
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 10px;
+  box-sizing: border-box;
+}
+.home_main .wrapWatch .watchHead ul li div h5 {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-weight: normal;
+}
+.home_main .wrapWatch .watchHead ul li div span {
+  margin-top: 10px;
+  color: #333;
+  font-weight: bold;
+}
+.home_main .wrapWatch .watchHead ul li .cover {
+  width: 100%;
+  height: calc(100vw / 2 - 22.5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ccc;
+  padding: 0;
+}
+.home_main .wrapWatch .watchHead ul li .cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.home_main .wrapWatch .watchHead ul li .like {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+.home_main .wrapWatch .watchHead ul .infinite-loading-container {
+  width: 100%;
+}
+.home_main .wrapWatch .watchHead .moreBtn {
+  height: 45px;
+  border: 1px solid #007099;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #007099;
+  margin: 15px 0 35px;
+}

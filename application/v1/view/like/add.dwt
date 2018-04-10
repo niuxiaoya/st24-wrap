@@ -1,0 +1,192 @@
+{include file="public/public_header"}
+{load file='/static/css/home_add.css'}
+{load file='/static/js/public_f.js'}
+<title>{$Think.lang.add_address}</title>
+</head>
+<body>
+<div id="app">
+    <header class="header">
+
+    </header>
+    <main class="home_main">
+        <ul>
+            <li>
+                <p>{$Think.lang.name}</p>
+                <div>
+                    <input type="text" placeholder="{$Think.lang.name}" v-model="post.receiver">
+                </div>
+            </li>
+            <li>
+                <p>{$Think.lang.detailed_address}</p>
+                <div>
+                    <input type="text" placeholder="{$Think.lang.detailed_address_text}" v-model="post.address">
+                </div>
+            </li>
+            <li>
+                <p>{$Think.lang.street_address}</p>
+                <div>
+                    <input type="text" placeholder="{$Think.lang.street_address}" v-model="post.street">
+                </div>
+            </li>
+            <li>
+                <p>{$Think.lang.prov}</p>
+                <div>
+                    <input type="text" placeholder="{$Think.lang.prov_text}" v-model="post.prov">
+                </div>
+            </li>
+            <li>
+                <p>{$Think.lang.postal_code}</p>
+                <div>
+                    <input type="text" placeholder="{$Think.lang.postal_code}" v-model="post.postcode">
+                </div>
+            </li>
+            <li>
+                <p>{$Think.lang.country}</p>
+                <div class="country">
+                    {{userInfo.country_name}}
+                </div>
+            </li>
+            <li>
+                <p>{$Think.lang.phone_number}</p>
+                <div class="tel">
+                    <div @click="countryShow=true">+{{post.tel_code}} <img src="/static/image/public/arror_down.png"></div>
+                    <input type="number" v-model="post.receiver_tel">
+                </div>
+            </li>
+            <li @click="defaultClick">
+                <div>
+                    {$Think.lang.default_address}
+                    <img :src="post.is_default==0?'/static/image/home/success.png':'/static/image/home/successActive.png'">                   <img src="/static/image/home/successActive.png" v-if="post.is_default==1">
+                </div>
+            </li>
+        </ul>
+    </main>
+    <footer class="footer">
+        <div @click="sub">
+            {$Think.lang.save}
+        </div>
+    </footer>
+    {include file="public/country"}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            countryShow:false,
+            countryList:[],
+            userInfo:{},
+            post:{
+              receiver:'',
+              address:'',
+              street:'',
+              prov:'',
+              receiver_tel:'',
+              country_id:41,
+              postcode:'',
+              is_default:0,
+              tel_code:86,
+            }
+        },
+        methods:{
+            countryClick(item){
+                this.post.tel_code = item.country_code
+                this.post.country_id = item.id
+                this.countryShow = false
+            },
+            defaultClick(){
+                if(this.post.is_default==0){
+                    this.post.is_default=1
+                }else{
+                    this.post.is_default=0
+                }
+            },
+            sub(){
+                let reg = /^1(3|4|5|7|8)\d{9}$/;
+                if(!this.post.receiver){
+                    this.$toast('{$Think.lang.name}{$Think.lang.cant_empty}')
+                    return false;
+                }
+                if(!this.post.address){
+                    this.$toast('{$Think.lang.detailed_address}{$Think.lang.cant_empty}')
+                    return false;
+                }
+                if(!this.post.street){
+                    this.$toast('{$Think.lang.street_address}{$Think.lang.cant_empty}')
+                    return false;
+                }
+                if(!this.post.prov){
+                    this.$toast('{$Think.lang.prov}{$Think.lang.cant_empty}')
+                    return false;
+                }
+                if(!this.post.postcode){
+                    this.$toast('{$Think.lang.postal_code}{$Think.lang.cant_empty}')
+                    return false;
+                }
+                if(!this.post.receiver_tel){
+                    this.$toast('{$Think.lang.phone_number}{$Think.lang.cant_empty}')
+                    return false;
+                }
+                if(!reg.test(this.post.receiver_tel)){
+                    this.$toast('{$Think.lang.phone_wrong}')
+                    return false
+                }
+                if(getUrlData('edit')==1){
+                    this.post.method = 2
+                    service.put('/like/add',this.post).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            history.go(-1)
+                        }else{
+                            this.$toast(res.data.msg)
+                        }
+                        console.log(res)
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }else{
+                    this.post.method = 1
+                    service.post('/like/add',this.post).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            location.href = '/like/address_list'
+                        }else{
+                            this.$toast(res.data.msg)
+                        }
+                        console.log(res)
+                    }).catch(err=>{
+                        console.log(err)
+                    })
+                }
+            }
+        },
+        mounted(){
+            if(getUrlData('edit')==1){
+                service.get('/like/address_info',{params:{id:getUrlData('id')}}).then(res=>{
+                    if(parseInt(res.data.errcode)==0){
+                        let data = res.data.data
+                        this.post = {
+                            receiver:data.receiver,
+                            address:data.address,
+                            street:data.street,
+                            prov:data.prov,
+                            receiver_tel:data.receiver_tel,
+                            country_id:data.country_id,
+                            postcode:data.postcode,
+                            is_default:data.is_default,
+                            tel_code:data.tel_code,
+                            id:data.id,
+                        }
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            }
+            this.userInfo = JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data?JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data:{}
+            this.countryList = JSON.parse('{:htmlspecialchars_decode($country_data)}').data
+        }
+    });
+</script>
+</body>
+</html>

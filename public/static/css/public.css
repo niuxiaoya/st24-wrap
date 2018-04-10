@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+ul li {
+  list-style-type: none;
+}
+input {
+  border: none;
+  outline: none;
+}
+#app {
+  overflow: hidden;
+  background: #f7f7f7;
+  min-height: 100vh;
+}
+.mint-toast {
+  max-width: 100% !important;
+}
+.mint-toast.is-placemiddle {
+  top: 20px!important;
+  width: 100% !important;
+  border-radius: 0 !important;
+}
+.mint-toast.is-placemiddle.bg {
+  background: rgba(3, 3, 3, 0.6) !important;
+}
+img[lazy=loading] {
+  width: 40px!important;
+  height: 40px!important;
+  margin: auto;
+}
+.mint-msgbox {
+  border-radius: 10px!important;
+  width: 250px!important;
+}
+.mint-msgbox .mint-msgbox-cancel {
+  color: #006aff;
+}
+.mint-msgbox .mint-msgbox-confirm {
+  color: #006aff;
+}
+.mint-msgbox .mint-msgbox-message {
+  color: #333!important;
+  font-size: 12px!important;
+  line-height: 22px!important;
+}

@@ -1,0 +1,95 @@
+{include file="public/public_header"}
+{load file='/static/css/home_address.css'}
+<title>{$Think.lang.receiving_address}</title>
+</head>
+<body>
+<div id="app">
+    <main class="home_main">
+        <div class="title">
+            {$Think.lang.receiving_address}
+            <span @click="is_edit=!is_edit">{{is_edit?'{$Think.lang.cancel}':'{$Think.lang.edit}'}}</span>
+        </div>
+        <ul>
+            <li v-for="(item,index) in address_list">
+                <div class="wrap active" v-if="item.is_default==1">
+                    {$Think.lang.address_default}
+                </div>
+                <div class="wrap">
+                    {{item.receiver}}
+                </div>
+                <div class="wrap">
+                    {{item.street}},{{item.address}}
+                </div>
+                <div class="wrap">
+                    {{item.prov}},{{item.postcode}}
+                </div>
+                <div class="wrap">
+                    {{item.tel_code?`+${item.tel_code}`:``}} {{item.receiver_tel}}
+                </div>
+                <div v-if="is_edit" class="edit">
+                    <div class="edit_left" @click="defaultClick(item)">
+                        <img :src="item.is_default==0?'/static/image/home/is_ok.png':'/static/image/home/ok.png'">
+                        {$Think.lang.default}
+                    </div>
+                    <div class="edit_right">
+                        <img src="/static/image/home/edit.png" @click="edit(item,index)">
+                        <img src="/static/image/home/delete.png" @click="deleteAddress(item,index)">
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="add" @click="location.href = '/like/add'">
+            {$Think.lang.add_new_address}
+        </div>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            is_edit:false,
+            address_list:[],
+        },
+        methods:{
+            defaultClick(item,index){
+                service.post('/like/add',{id:item.id,is_default:1,method:2}).then(res=>{
+                    if(parseInt(res.data.errcode)==0){
+                        for(let v of this.address_list){
+                            v.is_default = 0
+                        }
+                        item.is_default = 1
+                    }else{
+                        this.$toast(res.data.msg)
+                    }
+                })
+            },
+            edit(item){
+                location.href = `/like/add?edit=1&id=${item.id}`
+            },
+            deleteAddress(item,index){
+                service.delete('/like/add',{params:{method:3,id:item.id}}).then(res=>{
+                    if(parseInt(res.data.errcode)==0){
+                        this.address_list.splice(index,1)
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            }
+        },
+        mounted(){
+            service.get('/like/address_list',{params:{method:1}}).then(res=>{
+                if(parseInt(res.data.errcode)==0){
+                    this.address_list = res.data.data
+                }
+            }).catch(err=> {
+                console.log(err)
+            })
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+{include file="public/wrap_header"}
+{load file='/static/css/public_head.css'}
+{load file='/static/css/public_foot.css'}
+{load file='/static/css/search.css'}
+{load file='/static/js/public_f.js'}
+</head>
+<body>
+<div id="app">
+
+</div>
+<script language="javascript" type="text/javascript">
+    NTKF_PARAM = {
+        siteid:"kf_10178",                    //企业ID，为固定值，必填
+        settingid:"kf_10178_1522134627517",    //接待组ID，为固定值，必填
+        uid:"",                              //用户ID，未登录可以为空，但不能给null，uid赋予的值在显示到小能客户端上
+        uname:"",                            //未登录可以为空，但不能给null，uname赋予的值显示到小能客户端上
+        isvip:"0",                           //是否为vip用户，0代表非会员，1代表会员，取值显示到小能客户端上
+        userlevel:"1",                       //网站自定义会员级别，0-N，可根据选择判断，取值显示到小能客户端上
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script type="text/javascript" src="http://dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_10178" charset="utf-8"></script>
+<script>
+
+    new Vue({
+        el:'#app',
+        data: {
+            toolbarNum:3,
+            isShow:false,
+            aside_num:null,
+            langName:'',
+            lang:'',
+            userInfo:{}
+        },
+        methods:{
+            toolbarClick(index){
+                switch (index){
+                    case 0:
+                        location.href = '/home'
+                        break;
+                    case 1:
+                        location.href = '/search'
+                        break;
+                    case 2:
+                        location.href = '/like'
+                        break;
+                    case 3:
+                        location.href = '/message'
+                        break;
+
+                }
+            },
+            openAside(index){
+                this.aside_num = index
+                switch (index){
+                    case 1:
+                        location.href = '/index'
+                        break;
+                    case 2:
+                        location.href = '/home/setting'
+                        break;
+                    case 3:
+                        location.href = '/home/lang'
+                        break;
+                }
+            },
+            aside(){
+                this.isShow = !this.isShow
+                this.aside_num = null
+            },
+            loginClick(){
+                location.href = `/login`
+            },
+            message(){
+                NTKF.im_openInPageChat('kf_10178_1522134627517')
+            }
+        },
+        created(){
+            this.userInfo = JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data?JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data:{}
+            if(this.userInfo&&this.userInfo.uid){
+                NTKF_PARAM.uname = this.userInfo.username?this.userInfo.username:this.userInfo.tel
+                NTKF_PARAM.uid = `${this.userInfo.uid}`
+            }else{
+                NTKF_PARAM.uid = new Date().getTime()
+            }
+            this.message()
+            this.langName = localStorage.getItem('lang')?localStorage.getItem('lang'):'{$Think.lang.zh_cn}'
+        }
+    });
+</script>
+</body>
+</html>

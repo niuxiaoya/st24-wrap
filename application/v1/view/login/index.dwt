@@ -1,0 +1,139 @@
+{include file="public/public_header"}
+{load file='/static/js/public_f.js'}
+{load file='/static/css/login.css'}
+<title>{$Think.lang.login}</title>
+</head>
+<body>
+<div id="app">
+    <header>
+        <div @click="back">
+            <img src="/static/image/public/back.png">
+        </div>
+        <div class="head">
+            {$Think.lang.hello}
+            <p>{$Think.lang.welcome_rs}</p>
+        </div>
+    </header>
+    <main class="login_main">
+        <ul>
+            <li>
+                <div class="tit">
+                    {$Think.lang.phone}
+                </div>
+                <div class="main">
+                    <div @click="countryShow=true">+{{country_code}} <img src="/static/image/public/arror_down.png"></div><input type="number" v-model="post.tel" class="loginTel">
+                    <img src="/static/image/public/close.png" class="close" @click="post.tel = ''">
+                </div>
+            </li>
+            <li>
+                <div class="tit">
+                    {$Think.lang.code}
+                </div>
+                <div class="main">
+                    <input type="text" v-model="post.code" placeholder="{$Think.lang.six_code}" @keyup.13="subLogin">
+                    <img src="/static/image/public/close.png" class="close" @click="post.code = ''">
+                </div>
+            </li>
+        </ul>
+        <div class="subBtn">
+            <p @click="timeClick" :class="{active:isDisb}">{{codeNum==60?'{$Think.lang.get_code}':`{$Think.lang.get_code}(${codeNum})s`}}</p>
+            <div :class="{active:post.tel&&post.code.length==6}" @click="subLogin">
+                {$Think.lang.login}
+            </div>
+        </div>
+    </main>
+    {include file="public/country"}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    {include file="public/axios"}
+    new Vue({
+        el:'#app',
+        data: {
+            countryList:[],
+            codeNum: 60,
+            isDisb: false,
+            countryShow:false,
+            country_code:'86',
+            post:{
+                tel:'',
+                code:'',
+                country_id:'41'
+            }
+        },
+        methods:{
+            countryClick(item){
+                console.log('test')
+                this.country_code = item.country_code
+                this.post.country_id = item.id
+                this.countryShow = false
+            },
+            timeClick(){
+                let self = this
+                if (!self.isDisb) {
+                    let reg = /^1(3|4|5|7|8)\d{9}$/
+                    if(!reg.test(self.post.tel)){
+                        self.$toast('{$Think.lang.phone_wrong}')
+                    }else{
+                        let timeShow = setInterval(function () {
+                            self.isDisb = true
+                            if (self.codeNum <= 0) {
+                                self.isDisb = false
+                                clearInterval(timeShow)
+                                self.codeNum = 60
+                            } else {
+                                self.codeNum--
+                            }
+                        }, 1000)
+                        service.post('/login/send',{tel: self.post.tel, country_id: self.country_code || '86'}).then(res=>{
+                            if(parseInt(res.data.errcode)==0){
+
+                            }else{
+                                self.$toast(res.data.msg)
+                            }
+                        }).catch(err=> {
+                            console.log(err)
+                        })
+                    }
+                } else {
+                    return false
+                }
+            },
+            subLogin(){
+                let self = this
+                if(!self.post.tel||self.post.code.length!=6){
+                    return false
+                }
+                let reg = /^1(3|4|5|7|8)\d{9}$/
+                if(!reg.test(self.post.tel)){
+                    self.$toast('{$Think.lang.phone_wrong}')
+                    return false
+                }else if(self.post.code.length!=6){
+                    self.$toast('{$Think.lang.code_wrong}')
+                    return false
+                } else{
+                    service.post('',self.post).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            self.$toast('{$Think.lang.login_success}')
+                            location.href = '/'
+                        }else{
+                            self.$toast(res.data.msg)
+                        }
+                    }).catch(err=> {
+                        console.log(err)
+                    })
+                }
+            },
+            back(){
+                window.history.back(-1);
+            }
+        },
+        mounted(){
+            this.countryList = JSON.parse('{:htmlspecialchars_decode($country_data)}').data
+        }
+    });
+</script>
+</body>
+</html>

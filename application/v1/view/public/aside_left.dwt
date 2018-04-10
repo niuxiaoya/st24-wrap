@@ -1,0 +1,36 @@
+<div class="wrap_aside" :class="{active:isShow}" @click.stop="isShow=false">
+    <div class="headAside">
+        <div class="userAside">
+            <div class="isLogin" @click="loginClick" v-if="'{$login_val}'==0">
+                {$Think.lang.hello}<span>{$Think.lang.log_immediately}</span>
+            </div>
+            <div class="user" v-if="'{$login_val}'==1" @click="location.href='/home/user'">
+                {if !empty($userinfo)}
+                    <div>
+                        {if $userinfo['username'] == ''}{$userinfo['tel']}
+                        {else /} {$userinfo['username']}
+                        {/if}
+                    </div>
+                    {if $userinfo['avatar_pic'] == ''}<img src="/static/image/public/user.png">
+                    {else /} <img src="{$userinfo['avatar_pic']}">
+                    {/if}
+                {/if}
+            </div>
+        </div>
+        <ul>
+            <li @click="openAside(1)" :class="{active:aside_num==1}">
+                <img src="/static/image/public/shop.png" alt="{$Think.lang.purchase_record}">{$Think.lang.purchase_record}
+            </li>
+            <li @click="openAside(2)" :class="{active:aside_num==2}">
+                <img src="/static/image/public/edit.png" alt="{$Think.lang.setting}">{$Think.lang.setting}
+            </li>
+        </ul>
+        <div class="lang" @click="openAside(3)">
+            {{langName}}
+            <img src="/static/image/public/arrow_right.png">
+        </div>
+    </div>
+</div>
+<div :class="{hide:isShow}">
+
+</div>

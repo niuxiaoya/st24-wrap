@@ -1,0 +1,158 @@
+@watchWid:calc(~'100vw / 2 - 22.5px');
+#app{
+  background: #fff;
+  &.isHide{
+    overflow: hidden;
+    height: 100vh;
+  }
+}
+
+.banner{
+  margin-top: 48px;
+  .mint-swipe{
+    height: 100vw;
+    .mint-swipe-item{
+      img{
+        width: 100%!important;
+        height: 100%!important;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+//内容部分样式
+.home_main{
+  margin-bottom: 80px;
+  .topBrand{
+    margin: 40px 0;
+    h5{
+      font-size: 16px;
+      color: #424242;
+      margin-bottom: 15px;
+      padding-left: 15px;
+    }
+    ul{
+      display: flex;
+      overflow-x: scroll;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 15px;
+      li{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border:1px solid #e6e6e6;
+        border-radius: 5px;
+        overflow: hidden;
+        min-width: 122px;
+        margin-right: 12px;
+        background: #ccc;
+        div{
+          width: 100%;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          color: #999;
+          background: #fff;
+        }
+        p{
+          width: 122px;
+          height: 70px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #fff;
+          img{
+            width: 100%;
+            object-fit: cover;
+            min-height: 70px;
+            max-height: 100%;
+          }
+        }
+      }
+    }
+  }
+  .wrapWatch{
+    color: #333;
+    padding:0 15px;
+    .watchHead{
+      margin-bottom: 15px;
+      .watchTitle{
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+      ul{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        li{
+          width: @watchWid;
+          margin-bottom: 15px;
+          border:1px solid #e6e6e6;
+          border-radius: 5px;
+          overflow: hidden;
+          box-shadow:0px 2px 3px rgba(9,9,9,0.2);
+          position: relative;
+          box-sizing: border-box;
+          div{
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            padding: 15px 10px;
+            box-sizing: border-box;
+            h5{
+              width: 100%;
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              font-size: 14px;
+              font-weight: normal;
+            }
+            span{
+              margin-top: 10px;
+              color: #333;
+              font-weight: bold;
+            }
+          }
+          .cover{
+            width: 100%;
+            height: @watchWid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ccc;
+            padding: 0;
+            img{
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+          .like{
+            position: absolute;
+            right: 0px;
+            top: 0px;
+          }
+        }
+        .infinite-loading-container{
+          width: 100%;
+        }
+      }
+      .moreBtn{
+        height: 45px;
+        border:1px solid #007099;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #007099;
+        margin: 15px 0 35px;
+      }
+    }
+  }
+}

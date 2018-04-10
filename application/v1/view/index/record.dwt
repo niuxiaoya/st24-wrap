@@ -1,0 +1,135 @@
+{include file="public/public_header"}
+{load file='/static/css/record.css'}
+{load file='/static/js/moment.js'}
+<title>{$Think.lang.purchase_record}</title>
+</head>
+<body>
+<div id="app">
+    <header class="header">
+        <ul>
+            <li :class="{active:tabNum==0}" @click="tabClick(0)">
+                {$Think.lang.pending_payment}
+            </li>
+            <li :class="{active:tabNum==1}" @click="tabClick(1)">
+                {$Think.lang.already_paid}
+            </li>
+        </ul>
+    </header>
+    <main class="home_main">
+        <ul>
+            <li v-for="item in lists.list" @click="openDetail(item)">
+                <div class="date">
+                    {{item.order_time}}
+                </div>
+                <div class="wrap">
+                    <div class="img">
+                        <img :src="item.cover_pic" :alt="item.title" v-lazy="item.cover_pic">
+                    </div>
+                    <div class="tit">
+                        <h5>
+                            {{item.title}}
+                        </h5>
+                        <span>{{item.price}}</span>
+                    </div>
+                </div>
+                <div class="btn" v-if="(item.order_stage==0||item.order_stage==10)&&tabNum==0" @click.stop="openPay(item)">
+                    {$Think.lang.immediate_payment}
+                </div>
+                <div class="btn" v-if="item.order_stage==11&&tabNum==1" @click.stop="openPay(item)">
+                    {$Think.lang.continue_pay}({{item.price}})
+                </div>
+            </li>
+            <infinite-loading :on-infinite="onInfinite" ref="infiniteLoading">
+                <span slot="no-more"><span v-if="lists.page.total_pages>1">{$Think.lang.no_more}</span></span>
+                <span slot="no-results">{$Think.lang.no_more}</span>
+            </infinite-loading>
+        </ul>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+{load file='/static/js/vue-infinite-loading.js'}
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            tabNum:0,
+            type:'pay',
+            lists:{
+                list:[],
+                page:{
+                    p:0,
+                    total_pages:1
+                }
+            },
+            post:{
+                gender:''
+            }
+        },
+        methods:{
+            openDetail(item){
+                location.href = `/home/record_detail?bill_sn=${item.bill_sn}`
+            },
+            openPay(item){
+                location.href = `/like/pay?bill_sn=${item.bill_sn}`
+            },
+            tabClick(index){
+                if(this.tabNum == index){
+                    return false
+                }
+                this.tabNum= index
+                this.lists = {
+                    list:[],
+                    page:{
+                        p:0,
+                        total_pages:1
+                    }
+                }
+                if(index==0){
+                    this.type = 'pay'
+                }else{
+                    this.type = 'paid'
+                }
+                this.$nextTick(() => {
+                    this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
+                });
+            },
+            onInfinite() {
+                let self = this
+                setTimeout(() => {
+                    let self = this
+                    if (self.lists.page.p > self.lists.page.total_pages) {
+                        this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
+                        return false
+                    }
+                    self.lists.page.p++
+                    service.get('/home/record',{params:{p:self.lists.page.p,type:self.type,method:2}}).then(res=>{
+                        if(parseInt(res.data.errcode)==0){
+                            self.lists.list = self.lists.list.concat(res.data.data)
+                            for(let v of self.lists.list){
+                                v.order_time = moment(v.order_time*1000).format('YYYY-MM-DD')
+                            }
+                            self.lists.page = res.data.page
+                            self.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded');
+                        }else{
+                            self.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                        }
+                    }).catch(err=>{
+                        console.log(err)
+                        self.$refs.infiniteLoading.$emit('$InfiniteLoading:complete');
+                    })
+                }, 1000);
+            },
+        },
+        mounted(){
+
+        },
+        components: {
+            VueInfiniteLoading:VueInfiniteLoading.default,
+        }
+    });
+</script>
+</body>
+</html>

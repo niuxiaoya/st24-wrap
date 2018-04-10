@@ -1,0 +1,192 @@
+{include file="public/public_header"}
+{load file='/static/css/user.css'}
+{load file='/static/js/moment.js'}
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<title>{$Think.lang.essential_info}</title>
+</head>
+<body>
+<div id="app">
+    <header class="header">
+        <div class="user">
+            <img :src="imageUrl?imageUrl:'/static/image/public/user.png'" class="userImg">
+            <img src="/static/image/home/camera.png" class="camera">
+            <el-upload
+                    class="avatar-uploader"
+                    action="/home/upload"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+        </div>
+    </header>
+    <main class="home_main">
+        <ul>
+            <li>
+                <div class="tit">
+                    {$Think.lang.essential_info}
+                </div>
+                <div class="content">
+                    <input type="text" :placeholder="'{$Think.lang.input_user}'" v-model="post.username">
+                </div>
+            </li>
+            <li>
+                <div class="tit">
+                    {$Think.lang.surname}
+                </div>
+                <div class="content">
+                    <input type="text" :placeholder="'{$Think.lang.input_surname}'" v-model="post.surname">
+                </div>
+            </li>
+            <li>
+                <div class="tit">
+                    {$Think.lang.gender}
+                </div>
+                <div class="content">
+                    <p :class="{active:genderName=='{$Think.lang.gender_selection}'}">{{genderName}}</p>
+                    <select v-model="post.sex" class="gender" @change="genderChange">
+                        <option v-for="item in genderList" :value="item.val">{{item.label}}</option>
+                    </select>
+                </div>
+            </li>
+            <li>
+                <div class="tit">
+                    {$Think.lang.date_birth}
+                </div>
+                <div class="content">
+                    <p :class="{active:birthdayName=='{$Think.lang.date_selection}'}">{{birthdayName}}</p>
+                    <el-date-picker
+                            v-model="dateVal"
+                            class="dateStyle"
+                            type="date">
+                    </el-date-picker>
+                </div>
+            </li>
+        </ul>
+    </main>
+    <footer class="footer">
+        <div @click="sub">
+            {$Think.lang.save}
+        </div>
+    </footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    {include file="public/axios"}
+    new Vue({
+        el:'#app',
+        data: {
+            dateVal:'',
+            imageUrl:'',
+            genderName:'{$Think.lang.gender_selection}',
+            birthdayName:'{$Think.lang.date_selection}',
+            genderList:[
+                {
+                    label:'{$Think.lang.man}',
+                    val:1
+                },
+                {
+                    label:'{$Think.lang.woman}',
+                    val:2
+                }
+            ],
+            post:{
+                age:'',
+                avatar_fid:'',
+                sex:'',
+                username:'',
+                surname:''
+            }
+        },
+        methods:{
+            genderChange(){
+                for(let v of this.genderList){
+                    if(this.post.sex==v.val){
+                        this.genderName = v.label
+                    }
+                }
+            },
+            handleChange(val){
+                this.birthdayName = moment(val).format('YYYY-MM-DD')
+                this.post.age = this.birthdayName
+            },
+            langClick(item){
+                localStorage.setItem('lang',item.label)
+                location.href = '/home'
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
+                this.post.avatar_fid = res.fileinfo.fid
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                const isLt5M = file.size / 1024 / 1024 < 5;
+                if (!isJPG) {
+                    this.$toast('{$Think.lang.uploadimg_wrong}')
+                }
+                if (!isLt5M) {
+                    this.$toast('{$Think.lang.uploadimg_morethenfive}')
+                }
+                return isJPG && isLt5M;
+            },
+            sub(){
+                service.put('/home/user',this.post).then(res=>{
+                    if(JSON.parse(res.data.errcode)==0){
+                        this.$toast('{$Think.lang.save_yes}')
+                        setTimeout(()=>{
+                            location.href = '/home'
+                        },1000)
+                    }else{
+                        this.toast(res.data.msg)
+                    }
+                })
+            }
+        },
+        mounted(){
+            let self = this
+            let data = JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data
+            this.post = {
+                age:data.birthday,
+                avatar_fid:data.avatar_fid,
+                sex:data.sex,
+                username:data.username,
+                surname:data.surname
+            }
+
+            self.dateVal = this.post.age
+
+            if(data.avatar_pic){
+                this.imageUrl = data.avatar_pic
+            }
+
+            if(this.post.age){
+                this.birthdayName = moment(this.post.age).format('YYYY-MM-DD')
+            }
+
+            for(let v of this.genderList){
+                if(v.val == this.post.sex){
+                    this.genderName = v.label
+                }
+            }
+
+            for(let v of this.genderList){
+                if(v.val == this.post.sex){
+                    this.genderName = v.label
+                }
+            }
+            this.langName = localStorage.getItem('lang')?localStorage.getItem('lang'):'{$Think.lang.zh_cn}'
+        },
+        watch:{
+            dateVal(){
+                this.post.age = moment(this.dateVal).format('YYYY-MM-DD')
+                this.birthdayName = moment(this.dateVal).format('YYYY-MM-DD')
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+@watchWid:calc(~'100vw / 2 - 7.5px');
+.header{
+  padding: 15px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #e6e6e6;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.home_main{
+  padding:5px;
+  ul{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    li{
+      width: @watchWid;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+      box-sizing: border-box;
+      background: #fff;
+      div{
+        font-size: 14px;
+        color: #666;
+        display: flex;
+        flex-direction: column;
+        padding: 15px 10px;
+        box-sizing: border-box;
+        h5{
+          width: 100%;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          font-size: 14px;
+          font-weight: normal;
+        }
+        span{
+          margin-top: 10px;
+          color: #333;
+          font-weight: bold;
+        }
+      }
+      .cover{
+        width: 100%;
+        height: @watchWid;
+        object-fit: cover;
+      }
+      .like{
+        position: absolute;
+        right: 0px;
+        top: 0px;
+      }
+    }
+    .infinite-loading-container{
+      width: 100%;
+    }
+  }
+}
+
+.screen{
+  position: fixed;
+  bottom: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  ul{
+    display: flex;
+    justify-content: center;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 0 8px rgba(9,9,9,0.3);
+    li{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      padding: 12px 25px;
+      position: relative;
+      font-size: 16px;
+      color: #007099;
+      img{
+        margin-right: 10px;
+      }
+      &:first-child:before{
+        position: absolute;
+        content: '';
+        right: 0;
+        top: 0;
+        height: 100%;
+        width: 1px;
+        background: #f2f2f2;
+      }
+    }
+  }
+}
+
+.sortStyle{
+  width: 100%;
+  ul{
+    li{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      box-sizing: border-box;
+      border-bottom: 1px solid #f2f2f2;
+      &.active{
+        color: #007099;
+      }
+    }
+  }
+}

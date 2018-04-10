@@ -1,0 +1,72 @@
+.like_main {
+  margin: 48px 0;
+  padding: 5px;
+}
+.like_main .watchTitle {
+  font-size: 14px;
+  color: #333;
+  height: 48px;
+  border-bottom: 1px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+.like_main ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.like_main ul li {
+  width: calc(100vw / 2 - 7.5px);
+  margin-bottom: 5px;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  background: #fff;
+}
+.like_main ul li div {
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 10px;
+  box-sizing: border-box;
+}
+.like_main ul li div h5 {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-weight: normal;
+}
+.like_main ul li div span {
+  margin-top: 10px;
+  color: #333;
+  font-weight: bold;
+}
+.like_main ul li .cover {
+  width: 100%;
+  height: calc(100vw / 2 - 7.5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ccc;
+  padding: 0;
+}
+.like_main ul li .cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.like_main ul li .like {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+.like_main ul .infinite-loading-container {
+  width: 100%;
+}

@@ -1,0 +1,201 @@
+{include file="public/public_header"}
+{load file='/static/css/pay.css'}
+{load file='/static/js/public_f.js'}
+<title>{$Think.lang.choice_pay_method}</title>
+</head>
+<body>
+<div id="app">
+    <header class="header">
+        <span>{$Think.lang.pay_price}</span>
+        <div>
+            {{orderMoney.unpaid_money}}
+        </div>
+    </header>
+    <main class="home_main">
+        <ul>
+            <li v-for="item in payList" @click="payMethod(item)">
+                <div class="payLeft">
+                    <img :src="item.icon" :alt="item.name">
+                    {{item.name}}
+                </div>
+                <div class="payRight">
+                    <img src="/static/image/public/arrow_right.png">
+                </div>
+            </li>
+        </ul>
+        <div class="kf" @click="message">
+            {$Think.lang.service}
+            <img src="/static/image/public/arrow_right.png">
+        </div>
+    </main>
+    <mt-popup
+            class="payPop"
+            v-model="payPop"
+            position="bottom">
+        <div class="popWrap">
+            <div class="tit">
+                <img src="/static/image/public/closex1.png" @click="payPop = false">
+                {$Think.lang.config_pay}
+            </div>
+            <div class="price">
+                <p>{$Think.lang.input_price}({$Think.lang.surplus}<span>{{orderInfo.price}}</span>)</p>
+                <input type="number" :placeholder="orderInfo.order_stage==0||orderInfo.order_stage==10?`{$Think.lang.minimum}HK$10,000`:`{$Think.lang.greater}HK$0`" v-model="post.pay_money">
+            </div>
+            <ul class="order">
+                <li>
+                    <span>{$Think.lang.order_info}</span>
+                    <div>
+                        {{orderInfo.title}}
+                    </div>
+                </li>
+                <li>
+                    <span>{$Think.lang.order_price}</span>
+                    <div>
+                        {{orderInfo.price}}
+                    </div>
+                </li>
+                <li>
+                    <span>{$Think.lang.pay_method}</span>
+                    <div>
+                        {{method}}
+                    </div>
+                </li>
+            </ul>
+            <div class="payBtn" @click="sub">
+                {$Think.lang.go_pay}
+            </div>
+        </div>
+    </mt-popup>
+
+    <form id="form_starPay" name="form_starPay" :action="payInfo.http_url" method="post" v-show="false">
+        告诉paypal该表单是立即购买:<input type="text" name="cmd" :value="payInfo.cmd"  ><br>
+        卖家帐号  也就是收钱的帐号:<input type="text" name="business" :value="payInfo.business"  ><br>
+        商品名称:<input type="text" name= "sw_name" :value="payInfo.sw_name"><br>
+        价格:<input type="text" name= "amount" :value="payInfo.amount"><br>
+        币种:<input type="text" name= "currency_code" :value="payInfo.currency_code"><br>
+        支付成功后网页跳转地址:<input type="text" name= "return" :value="payInfo.return"><br>
+        支付成功后paypal后台发送订单通知地址:<input type="text" name= "notify_url" :value="payInfo.notify_url"><br>
+        自定义订单号   paypal原样返回:<input type="text" name= "invoice" :value="payInfo.invoice"  ><br>
+        自定义变量  paypal原样返回:<input type="text" name= "custom" :value="payInfo.custom"><br>
+        支付页面语言设置:<input type="text" name= "lc" :value="payInfo.lc"><br>
+    </form>
+</div>
+<script language="javascript" type="text/javascript">
+    NTKF_PARAM = {
+        siteid:"kf_10178",                   //siteid：企业ID，为固定值，必填
+        settingid:"kf_10178_1522134627517",           //settingid：接待组ID，为固定值，必填
+        uid:"",                             //用户ID，未登录可以为空，但不能给null，uid赋予的值在显示到小能客户端上
+        uname:"",                            //未登录可以为空，但不能给null，uname赋予的值显示到小能客户端上
+        isvip:"0",                           //是否为vip用户，0代表非会员，1代表会员，取值显示到小能客户端上
+        userlevel:"0",                       //网站自定义会员级别，0-N，可根据选择判断，取值显示到小能客户端上
+        erpparam:"erp",                        //erpparam为erp功能的扩展字段，可选，购买erp功能后用于erp功能集成
+        orderid:"20170730123456",                //orderid：(选填)订单号
+        orderprice:"12350"                       //orderprice：(选填)订单价格
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script type="text/javascript" src="http://dl.ntalker.com/js/xn6/ntkfstat.js?siteid=kf_10178" charset="utf-8"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            state:0,
+            method:'',
+            payPop:false,
+            orderInfo:{},
+            orderMoney:{},
+            payInfo:{
+                cmd:'',
+                business:'',
+                sw_name:'',
+                amount:'',
+                currency_code:'',
+                return:'',
+                notify_url:'',
+                invoice:'',
+                custom:'',
+                lc:'',
+            },
+            payList:[
+                {
+                    icon:'/static/image/home/vhkd.png',
+                    name:'VHKD',
+                    id:4
+                },
+                {
+                    icon:'/static/image/home/paypal.png',
+                    name:'paypal',
+                    id:5
+                }
+            ],
+            methods:[
+                {
+                    name:''
+                }
+            ],
+            userInfo:{},
+            post:{
+                bill_sn:'',
+                pay_method:5,
+                pay_money:''
+            }
+        },
+        methods:{
+            payMethod(item){
+                this.method = item.name
+                this.post.pay_method = item.id
+                this.payPop = true
+            },
+            message(){
+                NTKF.im_openInPageChat('kf_10178_1522134627517')
+            },
+            sub(){
+                if(this.orderInfo.order_stage==0&&this.post.pay_money<10000){
+                    this.$toast('{$Think.lang.pay_money_error}')
+                    return false
+                }
+                if(this.post.pay_money<=0){
+                    return false
+                }
+
+                this.post.bill_sn = this.orderInfo.bill_sn
+                service.post('/like/pay',this.post).then(res=>{
+                    if(parseInt(res.data.errcode)==0){
+                        this.$toast('{$Think.lang.submit_success}')
+                        let res_data = res.data.data
+                        this.payInfo = res.data.data
+                        this.payInfo.return = `http://192.168.10.101:8055/like/pay_state?bill_sn=${getUrlData('bill_sn')}`
+                        let form = document.getElementById('form_starPay');
+                        setTimeout(()=>{
+                            form.submit();
+                        },300)
+                    }
+                }).catch(err=>{
+                    console.log(err)
+                })
+            }
+        },
+        mounted(){
+            service.get('/like/orderInfo',{params:{bill_sn:getUrlData('bill_sn')}}).then(res=>{
+                if(parseInt(res.data.errcode)==0){
+                    this.orderInfo = res.data.data.order_info
+                    this.orderMoney = res.data.data
+                }
+            }).catch(err=>{
+                console.log(err)
+            })
+        },
+        created(){
+            this.userInfo = JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data?JSON.parse('{:htmlspecialchars_decode($userinfo_json)}').data:{}
+            if(this.userInfo){
+                NTKF_PARAM.uname = this.userInfo.username?this.userInfo.username:this.userInfo.tel
+                NTKF_PARAM.uid = `${this.userInfo.uid}`
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+.headInfo {
+  box-sizing: border-box;
+  background: #fff;
+  margin: 5px 0 10px;
+}
+.headInfo .watchInfo {
+  display: flex;
+  padding: 15px;
+}
+.headInfo .watchInfo .headTile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: calc(100% - 87px);
+}
+.headInfo .watchInfo .headTile h5 {
+  font-size: 12px;
+  font-weight: normal;
+  color: #666;
+  margin-bottom: 20px;
+}
+.headInfo .watchInfo .headTile span {
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+}
+.headInfo .watchInfo img {
+  width: 72px;
+  height: 72px;
+  margin-right: 15px;
+  object-fit: cover;
+}
+.headInfo .price {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #e6e6e6;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #333;
+}
+.headInfo .price div {
+  font-weight: bold;
+}
+.home_main .deliveryMethod {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+}
+.home_main .deliveryMethod div {
+  font-weight: bold;
+}
+.home_main .deliveryMethod p {
+  display: flex;
+  align-items: center;
+}
+.home_main .deliveryMethod p img {
+  margin-left: 10px;
+}
+.home_main .deliveryMethod select {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.home_main .address {
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  margin: 10px 0;
+  padding-bottom: 20px;
+  position: relative;
+}
+.home_main .address .addressTitle {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e6e6e6;
+  box-sizing: border-box;
+}
+.home_main .address ul {
+  padding: 15px;
+  box-sizing: border-box;
+}
+.home_main .address ul li {
+  margin-bottom: 7px;
+}
+.home_main .address ul li:last-child {
+  margin: 0;
+}
+.home_main .address .add {
+  font-size: 12px;
+  color: #007099;
+  padding-left: 15px;
+  margin-top: 15px;
+  display: block;
+}
+.home_main .orderBtn {
+  padding: 10px 15px;
+  box-sizing: border-box;
+  position: fixed;
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid #e6e6e6;
+  box-shadow: 0px 2px 5px rgba(9, 9, 9, 0.3);
+  bottom: 0;
+  left: 0;
+}
+.home_main .orderBtn div {
+  background: #eb4343;
+  border-radius: 5px;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fff;
+  font-weight: bold;
+}

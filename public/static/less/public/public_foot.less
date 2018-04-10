@@ -1,0 +1,66 @@
+.public_foot{
+  display: flex;
+  height: 45px;
+  position: fixed;
+  box-sizing: border-box;
+  width: 100%;
+  left: 0;
+  bottom:0;
+  border-top: 1px solid #f2f2f2;
+  z-index: 99;
+  background: #f7f7f7;
+  li{
+    width: 25%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    span{
+      width: 45px;
+      height: 45px;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    &:nth-child(1){
+      span{
+        background-image: url("/static/image/toolbar/home.png");
+      }
+    }
+    &:nth-child(2){
+      span{
+        background-image: url("/static/image/toolbar/search.png");
+      }
+    }
+    &:nth-child(3){
+      span{
+        background-image: url("/static/image/toolbar/like.png");
+      }
+    }
+    &:nth-child(4){
+      span{
+        background-image: url("/static/image/toolbar/message.png");
+      }
+    }
+    &.active{
+      &:nth-child(1){
+        span{
+          background-image: url("/static/image/toolbar/homeActive.png");
+        }
+      }
+      &:nth-child(2){
+        span{
+          background-image: url("/static/image/toolbar/searchActive.png");
+        }
+      }
+      &:nth-child(3){
+        span{
+          background-image: url("/static/image/toolbar/likeActive.png");
+        }
+      }
+      &:nth-child(4){
+        span{
+          background-image: url("/static/image/toolbar/messageActive.png");
+        }
+      }
+    }
+  }
+}

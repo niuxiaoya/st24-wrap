@@ -1,0 +1,98 @@
+{include file="public/wrap_header"}
+{load file='/static/css/public_head.css'}
+{load file='/static/css/public_foot.css'}
+{load file='/static/css/search.css'}
+{load file='/static/js/public_f.js'}
+<title>{$Think.lang.search}</title>
+</head>
+<body>
+<div id="app">
+    {include file="public/header"}
+    {include file="public/aside_left"}
+    <div class="head">
+        <div @click="location.href = '/search/search_list'">
+            <img src="/static/image/search/search.png">
+            <p>{$Think.lang.rs_search}</p>
+        </div>
+    </div>
+    <main class="home_main">
+        <mt-index-list>
+            <mt-index-section v-for="el in list" :index="el.initial">
+                <mt-cell v-for="item in el.list" :title="item.name" @click.native="brandClick(item)"></mt-cell>
+            </mt-index-section>
+        </mt-index-list>
+    </main>
+    <div class="screen" @click="location.href = '/search/screen'">
+        <div>
+            <img src="/static/image/search/screen.png">
+            {$Think.lang.screen}
+        </div>
+    </div>
+    {include file="public/footer" }
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    {include file="public/axios" }
+    new Vue({
+        el:'#app',
+        data: {
+            toolbarNum:1,
+            isShow:false,
+            aside_num:null,
+            langName:'',
+            lang:'',
+            list:[]
+        },
+        methods:{
+            toolbarClick(index){
+                switch (index){
+                    case 0:
+                        location.href = '/home'
+                        break;
+                    case 1:
+                        location.href = '/search'
+                        break;
+                    case 2:
+                        location.href = '/like'
+                        break;
+                    case 3:
+                        location.href = '/message'
+                        break;
+
+                }
+            },
+            brandClick(item){
+                location.href = `/search/search_res?brand_id=${item.id}`
+            },
+            openAside(index){
+                this.aside_num = index
+                switch (index){
+                    case 1:
+                        location.href = '/index'
+                        break;
+                    case 2:
+                        location.href = '/home/setting'
+                        break;
+                    case 3:
+                        location.href = '/home/lang'
+                        break;
+                }
+            },
+            aside(){
+                this.isShow = !this.isShow
+                this.aside_num = null
+            },
+            loginClick(){
+                location.href = `/login`
+            }
+        },
+        mounted(){
+            this.list = JSON.parse('{:htmlspecialchars_decode($brank_data)}'.replace(/\n/g, '')).data
+            this.langName = localStorage.getItem('lang')?localStorage.getItem('lang').split(',')[0]:'{$Think.lang.zh_cn}'
+        }
+    });
+</script>
+</body>
+</html>

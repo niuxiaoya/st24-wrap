@@ -1,0 +1,73 @@
+@watchWid:calc(~'100vw / 2 - 7.5px');
+.like_main{
+  margin: 48px 0;
+  padding: 5px;
+  .watchTitle{
+    font-size: 14px;
+    color: #333;
+    height: 48px;
+    border-bottom: 1px solid #e6e6e6;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+  ul{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    li{
+      width: @watchWid;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+      box-sizing: border-box;
+      background: #fff;
+      div{
+        font-size: 14px;
+        color: #666;
+        display: flex;
+        flex-direction: column;
+        padding: 15px 10px;
+        box-sizing: border-box;
+        h5{
+          width: 100%;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          font-size: 14px;
+          font-weight: normal;
+        }
+        span{
+          margin-top: 10px;
+          color: #333;
+          font-weight: bold;
+        }
+      }
+      .cover{
+        width: 100%;
+        height: @watchWid;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ccc;
+        padding: 0;
+        img{
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .like{
+        position: absolute;
+        right: 0px;
+        top: 0px;
+      }
+    }
+    .infinite-loading-container{
+      width: 100%;
+    }
+  }
+}

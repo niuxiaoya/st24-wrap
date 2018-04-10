@@ -1,0 +1,184 @@
+.header {
+  padding: 25px 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header span {
+  color: #007099;
+  font-size: 12px;
+  font-weight: normal;
+}
+.home_main {
+  padding: 0 5px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #333;
+}
+.home_main .watchInfo {
+  background: #fff;
+  border: 25px;
+  padding-bottom: 35px;
+}
+.home_main .watchInfo .date {
+  padding: 15px 10px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #f2f2f2;
+}
+.home_main .watchInfo .content {
+  display: flex;
+  padding: 15px 10px 20px 10px;
+  box-sizing: border-box;
+  position: relative;
+}
+.home_main .watchInfo .content:before {
+  content: '';
+  position: absolute;
+  width: calc(100% - 15px);
+  height: 1px;
+  background: #f2f2f2;
+  bottom: 0;
+  right: 0;
+}
+.home_main .watchInfo .content .cover img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+}
+.home_main .watchInfo .content .tit {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-left: 10px;
+  box-sizing: border-box;
+  font-size: 12px;
+}
+.home_main .watchInfo .content .tit h5 {
+  color: #666;
+  font-weight: normal;
+}
+.home_main .watchInfo .content .tit div {
+  font-weight: bold;
+  font-size: 14px;
+}
+.home_main .watchInfo .content .tit span {
+  color: #007099;
+}
+.home_main .watchInfo ul {
+  padding-left: 10px;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+.home_main .watchInfo ul li {
+  padding: 15px 0;
+  border-bottom: 1px solid #f2f2f2;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #999;
+}
+.home_main .watchInfo ul li.no_pay {
+  color: #333;
+}
+.home_main .watchInfo ul li.no_pay span {
+  color: #ff5757;
+}
+.home_main .watchInfo .btn {
+  width: calc(100% - 30px);
+  margin: 0 auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  color: #333;
+  background: #f0f0f0;
+  border-radius: 5px;
+  font-size: 16px;
+}
+.home_main .watchInfo .btn.payBtn {
+  color: #fff;
+  background: #ff5757;
+  font-weight: bold;
+}
+.home_main .watchInfo .btn:last-child {
+  margin-bottom: 0;
+}
+.home_main .address {
+  font-size: 14px;
+  color: #333;
+  margin: 10px 0;
+  padding-bottom: 20px;
+  position: relative;
+}
+.home_main .address .wrapTit {
+  padding: 25px 10px;
+  box-sizing: border-box;
+  font-weight: bold;
+}
+.home_main .address .addressTitle {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e6e6e6;
+  box-sizing: border-box;
+  background: #fff;
+}
+.home_main .address ul {
+  padding: 25px 15px;
+  box-sizing: border-box;
+  background: #fff;
+}
+.home_main .address ul li {
+  margin-bottom: 7px;
+}
+.home_main .address ul li.title {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.home_main .address ul li:last-child {
+  margin: 0;
+}
+.home_main .address .add {
+  font-size: 12px;
+  color: #007099;
+  padding-left: 15px;
+}
+.home_main .pay {
+  font-size: 12px;
+  color: #333;
+}
+.home_main .pay .wrapTit {
+  padding: 25px 10px;
+  box-sizing: border-box;
+  font-weight: bold;
+}
+.home_main .pay ul {
+  background: #fff;
+  border-radius: 5px;
+  overflow: hidden;
+  padding-left: 10px;
+  box-sizing: border-box;
+}
+.home_main .pay ul li {
+  padding: 15px 10px 15px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+.home_main .pay ul li:last-child {
+  border-bottom: none;
+}
+.home_main .pay ul li .title {
+  color: #999;
+  margin-bottom: 15px;
+}
+.home_main .pay ul li div {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.home_main .pay ul li div:last-child {
+  margin-bottom: 0;
+}

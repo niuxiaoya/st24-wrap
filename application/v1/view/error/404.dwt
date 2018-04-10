@@ -1,0 +1,52 @@
+{include file="public/public_header"}
+{load file='/static/js/public_f.js'}
+<title>404</title>
+</head>
+<style>
+    .home_main{
+        display: flex;
+        justify-content: center;
+        padding-top: 114px;
+        flex-direction: column;
+        align-items: center;
+    }
+    .err-network{
+        font-size: 14px;
+        color: #333;
+        padding:30px 0 40px 0;
+    }
+    .err-load{
+        outline: none;
+        border: none;
+        width: 250px;
+        height: 45px;
+        background: #333;
+        font-size: 16px;
+        color: #fff;
+        border-radius: 5px;
+    }
+</style>
+<body>
+<div id="app">
+    <main class="home_main">
+        <img src="/static/image/error/icon.png">
+        <p class="err-network">{$Think.lang.error_page}</p>
+        <button class="err-load" @click="location.href='/home'">{$Think.lang.error_unload}</button>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/mint-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el:'#app',
+        data: {
+
+        },
+        methods:{
+        },
+        mounted(){
+        }
+    });
+</script>
+</body>
+</html>
